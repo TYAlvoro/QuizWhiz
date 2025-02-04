@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/quizwhiz
+    username: alvoro
+    password: securekotik25
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+jwt:
+  secret: wY2%2<ECc'b&E[s]%ysQN0LCRp>1JI$E
+  expiration: 3600000
+server:
+  port: 8081
