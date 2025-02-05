@@ -1,0 +1,21 @@
+package com.quizwhiz.authservice.controller
+
+import com.quizwhiz.authservice.model.User
+import com.quizwhiz.authservice.repository.UserRepository
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/internal/users")
+class InternalUserController(private val userRepository: UserRepository) {
+
+    // Эндпоинт для получения данных пользователя по username
+    @GetMapping("/by-username/{username}")
+    fun getUserByUsername(@PathVariable username: String): ResponseEntity<User> {
+        val user: User? = userRepository.findByUsername(username)
+        return if (user != null) ResponseEntity.ok(user) else ResponseEntity.notFound().build()
+    }
+}
