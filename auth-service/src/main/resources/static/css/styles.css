@@ -1,0 +1,99 @@
+/* Общий стиль для всего приложения */
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #3a6186, #89253e);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Контейнер для карточки формы */
+.card-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    margin: 1rem;
+}
+
+/* Заголовок формы */
+.card-container h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    color: #3a6186;
+}
+
+/* Группа полей формы */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #3a6186;
+    outline: none;
+    box-shadow: 0 0 5px rgba(58, 97, 134, 0.5);
+}
+
+/* Кнопка отправки формы */
+.btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #3a6186;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #2a4a6f;
+}
+
+/* Стили для общих сообщений об ошибке */
+.alert {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #f8d7da;
+    color: #721c24;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Ссылка на другие страницы */
+.link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #3a6186;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
