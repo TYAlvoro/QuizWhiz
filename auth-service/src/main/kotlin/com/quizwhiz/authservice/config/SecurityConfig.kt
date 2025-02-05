@@ -31,12 +31,15 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { it.disable() }
-            //.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATEFUL) } // Если вы хотите использовать форму логина
+            // Используем stateful сессии для формы логина (если требуется)
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) }
             .authorizeHttpRequests { auth ->
-                // Теперь для всех запросов требуется аутентификация
-                auth.anyRequest().authenticated()
+                // Разрешаем публичный доступ к следующим URL:
+                auth.requestMatchers(HttpMethod.GET, "/login", "/register").permitAll()
+                    .anyRequest().authenticated()
             }
             .formLogin { form ->
+                // Настраиваем форму логина, которая доступна всем
                 form
                     .loginPage("/login")
                     .defaultSuccessUrl("/", true)
@@ -45,7 +48,6 @@ class SecurityConfig(
             .logout { logout ->
                 logout.permitAll()
             }
-            // Устанавливаем свой UserDetailsService и PasswordEncoder через автоматическую конфигурацию
             .userDetailsService(customUserDetailsService)
         return http.build()
     }

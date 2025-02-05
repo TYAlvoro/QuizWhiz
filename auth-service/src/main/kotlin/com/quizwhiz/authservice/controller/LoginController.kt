@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping
 class LoginController {
     @GetMapping("/login")
     fun login(): String {
-        return "login" // будет искаться шаблон login.html
+        return "login"  // Шаблон login.html в src/main/resources/templates
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController
 class HomeController {
     @GetMapping("/")
     fun home(): String {
-        println("Я пришел")
         return "Добро пожаловать в Auth Service"
     }
 }

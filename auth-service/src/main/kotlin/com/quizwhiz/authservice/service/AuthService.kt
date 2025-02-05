@@ -7,6 +7,7 @@ import com.quizwhiz.authservice.model.User
 import com.quizwhiz.authservice.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthService(
@@ -14,7 +15,9 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder,
     private val jwtTokenProvider: JwtTokenProvider
 ) {
+    @Transactional
     fun register(request: RegistrationRequest) {
+        println("Регистрация пользователя: $request")
         if (userRepository.existsByUsername(request.username)) {
             throw RuntimeException("Username already exists")
         }
@@ -24,6 +27,7 @@ class AuthService(
             role = request.role,
             email = request.email
         )
+        println("Сохраняем пользователя: $user")
         userRepository.save(user)
     }
 
