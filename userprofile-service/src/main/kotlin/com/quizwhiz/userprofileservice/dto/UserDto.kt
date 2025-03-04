@@ -1,0 +1,10 @@
+package com.quizwhiz.userprofileservice.dto
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class UserDto(
+    val username: String,
+    val email: String?,
+    val role: String
+)

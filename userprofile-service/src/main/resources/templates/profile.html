@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Профиль пользователя</title>
+  <!-- Подключение шрифтов -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" />
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+<body>
+<div class="min-h-screen flex flex-col bg-white overflow-x-hidden"
+     style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;">
+  <!-- Верхняя часть: информация о пользователе -->
+  <div class="flex flex-col items-center p-6 bg-gray-100">
+    <!-- Здесь вместо фотографии профиля просто выводим данные -->
+    <p class="text-2xl font-bold text-gray-900" th:text="${profile.username}">Имя пользователя</p>
+    <p class="text-base text-gray-700" th:text="${profile.email}">Электронная почта</p>
+    <p class="text-base text-gray-700" th:text="${profile.role}">Роль</p>
+  </div>
+
+  <!-- Основное содержимое страницы -->
+  <div class="container mx-auto p-4">
+    <!-- Секция тестов -->
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Ваши тесты</h1>
+    <div class="grid grid-cols-1 gap-4">
+      <!-- Пример карточки теста; в реальном коде данные можно подставлять через Thymeleaf -->
+      <div class="p-4 border rounded-lg">
+        <p class="text-xl font-semibold">Тест 101</p>
+        <p class="text-gray-600">В процессе</p>
+        <button class="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
+          Продолжить
+        </button>
+      </div>
+      <!-- Здесь можно добавить дополнительные карточки тестов -->
+    </div>
+
+    <!-- Секция истории тестов -->
+    <h2 class="text-2xl font-bold text-gray-900 mt-8">История тестов</h2>
+    <div class="mt-4">
+      <div class="p-4 border rounded-lg mb-2">
+        <p class="text-xl font-semibold">Тест 101</p>
+        <p class="text-gray-600">Статус: В процессе</p>
+        <a href="#" class="text-blue-500">Продолжить</a>
+      </div>
+      <!-- Дополнительные записи истории тестов -->
+    </div>
+
+    <!-- Секция рекомендаций -->
+    <h2 class="text-2xl font-bold text-gray-900 mt-8">Персональные рекомендации</h2>
+    <div class="flex space-x-4 mt-4">
+      <div class="p-4 border rounded-lg">
+        <p class="font-medium">Тест по истории</p>
+      </div>
+      <div class="p-4 border rounded-lg">
+        <p class="font-medium">Тест по науке</p>
+      </div>
+      <div class="p-4 border rounded-lg">
+        <p class="font-medium">Тест по литературе</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
