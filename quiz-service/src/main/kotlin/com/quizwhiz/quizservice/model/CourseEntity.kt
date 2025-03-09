@@ -1,4 +1,4 @@
-package com.quizwhiz.quizservice.entity
+package com.quizwhiz.quizservice.model
 
 import jakarta.persistence.*
 

@@ -1,6 +1,6 @@
 package com.quizwhiz.quizservice.repository
 
-import com.quizwhiz.quizservice.entity.QuizEntity
+import com.quizwhiz.quizservice.model.QuizEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface QuizRepository : JpaRepository<QuizEntity, Long> {

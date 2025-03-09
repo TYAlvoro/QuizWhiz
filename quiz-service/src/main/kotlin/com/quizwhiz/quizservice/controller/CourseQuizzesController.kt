@@ -1,7 +1,7 @@
 package com.quizwhiz.quizservice.controller
 
-import com.quizwhiz.quizservice.entity.CourseEntity
-import com.quizwhiz.quizservice.entity.QuizEntity
+import com.quizwhiz.quizservice.model.CourseEntity
+import com.quizwhiz.quizservice.model.QuizEntity
 import com.quizwhiz.quizservice.repository.CourseRepository
 import com.quizwhiz.quizservice.repository.QuizRepository
 import com.quizwhiz.quizservice.security.JwtTokenProvider
