@@ -37,9 +37,12 @@
               <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#F0F2F5] text-[#141414] text-sm font-bold leading-normal tracking-[0.015em] flex-1 @[480px]:flex-auto">
                 <span class="truncate">Пройти тест</span>
               </button>
-              <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#359EFF] text-[#FFFFFF] text-sm font-bold leading-normal tracking-[0.015em] flex-1 @[480px]:flex-auto">
-                <span class="truncate">Создать тест</span>
-              </button>
+              <a class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center
+       overflow-hidden rounded-full h-10 px-4 bg-[#359EFF] text-[#FFFFFF] text-sm
+       font-bold leading-normal tracking-[0.015em] flex-1 @[480px]:flex-auto"
+                 th:href="@{'/profile/' + ${profile.username} + '/courses'(token=${param.token})}">
+                <span class="truncate">Мои курсы</span>
+              </a>
             </div>
           </div>
         </div>

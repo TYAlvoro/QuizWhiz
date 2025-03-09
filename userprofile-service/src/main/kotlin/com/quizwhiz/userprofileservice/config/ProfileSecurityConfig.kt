@@ -1,5 +1,6 @@
 package com.quizwhiz.userprofileservice.config
 
+import com.quizwhiz.userprofileservice.config.JwtTokenProvider
 import com.quizwhiz.userprofileservice.security.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Создать курс</title>
+</head>
+<body>
+<h1>Создание нового курса</h1>
+<form th:action="@{/courses}" method="post">
+  <!-- Скрытое поле для токена, если потребуется -->
+  <input type="hidden" name="token" th:value="${token}" />
+  <input type="hidden" name="id" th:value="${courseDto.id}"/>
+  <input type="hidden" name="teacherId" th:value="${courseDto.teacherId}"/>
+
+  <div>
+    <label>Название курса:</label>
+    <input type="text" name="courseName" th:value="${courseDto.courseName}" required/>
+  </div>
+  <div>
+    <label>Описание:</label>
+    <textarea name="description" th:text="${courseDto.description}"></textarea>
+  </div>
+  <button type="submit">Создать курс</button>
+</form>
+</body>
+</html>

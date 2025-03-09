@@ -3,7 +3,8 @@ package com.quizwhiz.quizservice
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@SpringBootApplication
+
+@SpringBootApplication()
 class QuizServiceApplication
 
 fun main(args: Array<String>) {

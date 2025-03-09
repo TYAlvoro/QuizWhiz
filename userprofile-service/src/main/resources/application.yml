@@ -4,6 +4,8 @@ server:
 auth:
   service:
     url: http://127.0.0.1:8081
+quizservice:
+  url: 127.0.0.1:8083
 
 logging:
   level:

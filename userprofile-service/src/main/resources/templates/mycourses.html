@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Мои курсы</title>
+</head>
+<body>
+
+<h1>Мои курсы</h1>
+<p>Пользователь: <span th:text="${profile.username}">Username</span></p>
+
+<!-- Кнопка "Создать курс" будет вести на QuizService -->
+<!-- Например, на http://127.0.0.1:8083/courses/new?teacherId=... -->
+<a th:href="@{'http://127.0.0.1:8083/courses/new'(token=${param.token})}">
+  Создать курс
+</a>
+
+<hr/>
+
+<div th:each="course : ${courses}">
+  <h2 th:text="${course.courseName}">Название курса</h2>
+  <p th:text="${course.description}">Описание</p>
+  <hr/>
+</div>
+
+</body>
+</html>
