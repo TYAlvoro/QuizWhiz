@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="'Курс: ' + ${course.courseName}">Курс</title>
+</head>
+<body>
+<h1 th:text="${course.courseName}">Название курса</h1>
+<p>Описание: <span th:text="${course.description}"></span></p>
+
+<h2>Список квизов</h2>
+<ul>
+  <li th:each="quiz : ${quizzes}">
+    <span th:text="${quiz.title}">Название квиза</span>
+    <!-- Можно сделать ссылку на детальную страницу квиза, если нужно -->
+  </li>
+</ul>
+
+<!-- Кнопка "Создать квиз" -->
+<a th:href="@{|/courses/${course.id}/quizzes/new?token=${token}|}">
+  Создать квиз
+</a>
+
+</body>
+</html>

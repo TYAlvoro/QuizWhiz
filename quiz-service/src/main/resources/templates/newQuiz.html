@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Создать квиз</title>
+</head>
+<body>
+<h1>Создать квиз</h1>
+
+<form th:action="@{|/courses/${courseId}/quizzes?token=${token}|}" method="post">
+    <div>
+        <label for="title">Название квиза:</label>
+        <input type="text" id="title" name="title" required>
+    </div>
+    <div>
+        <label for="description">Описание (необязательно):</label>
+        <textarea id="description" name="description"></textarea>
+    </div>
+    <button type="submit">Создать</button>
+</form>
+</body>
+</html>
