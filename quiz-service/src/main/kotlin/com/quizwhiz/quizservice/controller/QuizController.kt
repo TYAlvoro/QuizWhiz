@@ -1,55 +1,75 @@
 package com.quizwhiz.quizservice.controller
 
-import com.quizwhiz.quizservice.model.QuizEntity
+import com.quizwhiz.quizservice.document.QuizDocument
+import com.quizwhiz.quizservice.dto.QuizDto
 import com.quizwhiz.quizservice.repository.QuizRepository
 import com.quizwhiz.quizservice.security.JwtTokenProvider
+import jakarta.servlet.http.HttpServletRequest
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PostMapping
+import java.util.*
 
 @Controller
-@RequestMapping("/courses/{courseId}/quizzes")
 class QuizController(
     private val quizRepository: QuizRepository,
     private val jwtTokenProvider: JwtTokenProvider
 ) {
-    // Страница с формой
-    @GetMapping("/new")
-    fun newQuizForm(
-        @PathVariable courseId: Long,
-        @RequestParam token: String,
-        model: Model
-    ): String {
-        // Проверить токен, если нужно
-        val username = jwtTokenProvider.getUsernameFromJWT(token)
-            ?: throw RuntimeException("Invalid token")
 
-        model.addAttribute("courseId", courseId)
+    private val log = LoggerFactory.getLogger(QuizController::class.java)
+
+    // Отображение формы для создания нового квиза.
+    // Параметры: token (для безопасности) и courseId (ID курса, к которому привязывается квиз)
+    @GetMapping("/quizzes/new")
+    fun newQuizForm(request: HttpServletRequest, model: Model): String {
+        val token = request.getParameter("token")
+        log.debug("Получен токен: {}", token)
+
+        val courseId = request.getParameter("courseId") ?: ""
+        log.debug("Получен courseId: {}", courseId)
+
+        // Создаем пустой DTO для формы с дефолтными значениями
+        val quizDto = QuizDto(
+            courseId = courseId,
+            title = "",
+            description = "",
+            questionIds = emptyList(),
+            answerType = "MULTIPLE_CHOICE", // пример дефолтного типа ответа
+            isOpen = false
+        )
+        model.addAttribute("quizDto", quizDto)
         model.addAttribute("token", token)
-        return "newquiz" // шаблон формы
+        return "newquiz"  // Файл newquiz.html должен находиться в src/main/resources/templates/
     }
 
-    // Обработка формы (POST)
-    @PostMapping
+    // Обработка формы создания квиза (POST)
+    @PostMapping("/quizzes")
     fun createQuiz(
-        @PathVariable courseId: Long,
-        @RequestParam token: String,
-        @RequestParam title: String,
-        @RequestParam(required = false) description: String?
+        @ModelAttribute quizDto: QuizDto,
+        request: HttpServletRequest
     ): String {
-        // проверка токена
-        val username = jwtTokenProvider.getUsernameFromJWT(token)
-            ?: throw RuntimeException("Invalid token")
+        val token = request.getParameter("token") ?: ""
+        log.debug("Получен токен из формы: {}", token)
+        val teacherUsername = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
 
-        // Создаём сущность
-        val quiz = QuizEntity(
-            courseId = courseId,
-            title = title,
-            description = description
+        // Создаем документ квиза для MongoDB
+        val quiz = QuizDocument(
+            courseId = quizDto.courseId,
+            title = quizDto.title,
+            description = quizDto.description,
+            questionIds = quizDto.questionIds,
+            answerType = quizDto.answerType,
+            isOpen = quizDto.isOpen,
+            createdAt = Date(),
+            updatedAt = Date()
         )
-        quizRepository.save(quiz)
+        val savedQuiz = quizRepository.save(quiz)
+        log.info("Квиз успешно создан с id: {}", savedQuiz.id)
 
-        // После создания квиза возвращаемся на список квизов курса
-        return "redirect:/courses/$courseId?token=$token"
+        // Редирект на страницу квизов курса (в сервисе user-profile)
+        return "redirect:http://127.0.0.1:8082/profile/$teacherUsername/courses/${quizDto.courseId}/quizzes?token=$token"
     }
 }

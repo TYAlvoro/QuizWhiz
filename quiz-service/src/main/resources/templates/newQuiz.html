@@ -1,22 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8">
     <title>Создать квиз</title>
 </head>
 <body>
-<h1>Создать квиз</h1>
+<h1>Создание нового квиза</h1>
+<form th:action="@{/quizzes}" method="post">
+    <!-- Скрытые поля для токена и courseId -->
+    <input type="hidden" name="token" th:value="${token}" />
+    <input type="hidden" name="courseId" th:value="${quizDto.courseId}" />
 
-<form th:action="@{|/courses/${courseId}/quizzes?token=${token}|}" method="post">
     <div>
-        <label for="title">Название квиза:</label>
-        <input type="text" id="title" name="title" required>
+        <label>Название квиза:</label>
+        <input type="text" name="title" th:value="${quizDto.title}" required />
     </div>
     <div>
-        <label for="description">Описание (необязательно):</label>
-        <textarea id="description" name="description"></textarea>
+        <label>Описание:</label>
+        <textarea name="description" th:text="${quizDto.description}"></textarea>
     </div>
-    <button type="submit">Создать</button>
+    <div>
+        <label>Тип ответа:</label>
+        <select name="answerType">
+            <option value="multiple-choice" th:selected="${quizDto.answerType == 'multiple-choice'}">Выбор ответа</option>
+            <option value="drag-and-drop" th:selected="${quizDto.answerType == 'drag-and-drop'}">Перетаскивание</option>
+            <!-- Можно добавить другие типы -->
+        </select>
+    </div>
+    <div>
+        <label>Открыт для прохождения:</label>
+        <input type="checkbox" name="isOpen" th:checked="${quizDto.isOpen}" />
+    </div>
+    <!-- Для простоты здесь список вопросов не заполняется, его можно добавить отдельно -->
+    <button type="submit">Создать квиз</button>
 </form>
 </body>
 </html>

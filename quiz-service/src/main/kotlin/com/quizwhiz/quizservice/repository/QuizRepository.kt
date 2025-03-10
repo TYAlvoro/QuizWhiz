@@ -1,9 +1,8 @@
 package com.quizwhiz.quizservice.repository
 
-import com.quizwhiz.quizservice.model.QuizEntity
-import org.springframework.data.jpa.repository.JpaRepository
+import com.quizwhiz.quizservice.document.QuizDocument
+import org.springframework.data.mongodb.repository.MongoRepository
 
-interface QuizRepository : JpaRepository<QuizEntity, Long> {
-    // метод для получения квизов по ID курса
-    fun findAllByCourseId(courseId: Long): List<QuizEntity>
+interface QuizRepository : MongoRepository<QuizDocument, String> {
+    fun findAllByCourseId(courseId: String): List<QuizDocument>
 }

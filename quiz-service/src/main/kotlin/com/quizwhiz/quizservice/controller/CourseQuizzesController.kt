@@ -1,7 +1,7 @@
 package com.quizwhiz.quizservice.controller
 
 import com.quizwhiz.quizservice.model.CourseEntity
-import com.quizwhiz.quizservice.model.QuizEntity
+import com.quizwhiz.quizservice.document.QuizDocument
 import com.quizwhiz.quizservice.repository.CourseRepository
 import com.quizwhiz.quizservice.repository.QuizRepository
 import com.quizwhiz.quizservice.security.JwtTokenProvider
@@ -24,25 +24,27 @@ class CourseQuizzesController(
         @RequestParam token: String, // получаем token как request param
         model: Model
     ): String {
-        // 1) Проверить токен (опционально можно проверить userId/username)
+        // 1) Проверяем токен и извлекаем username
         val username = jwtTokenProvider.getUsernameFromJWT(token)
             ?: throw RuntimeException("Invalid token")
 
-        // 2) Найти курс по ID
+        // 2) Находим курс по ID (из PostgreSQL)
         val course: CourseEntity = courseRepository.findById(courseId).orElseThrow {
             RuntimeException("Course not found")
         }
 
-        // 3) Найти квизы для этого курса
-        val quizzes: List<QuizEntity> = quizRepository.findAllByCourseId(courseId)
+        // 3) Находим квизы для этого курса в MongoDB.
+        // Предполагаем, что в коллекции квизов поле courseId хранится как строка,
+        // поэтому преобразуем courseId в строку.
+        val quizzes: List<QuizDocument> = quizRepository.findAllByCourseId(courseId.toString())
 
-        // 4) Положить данные в модель
+        // 4) Добавляем данные в модель
         model.addAttribute("course", course)
         model.addAttribute("quizzes", quizzes)
         model.addAttribute("token", token)
         model.addAttribute("username", username)
 
-        // 5) Вернуть шаблон, например, "courseQuizzes"
+        // 5) Возвращаем шаблон, например, "courseQuizzes"
         return "courseQuizzes"
     }
 }
