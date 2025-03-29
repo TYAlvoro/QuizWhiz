@@ -2,6 +2,7 @@ package com.quizwhiz.quizservice.controller
 
 import com.quizwhiz.quizservice.document.QuizDocument
 import com.quizwhiz.quizservice.dto.QuizDto
+import com.quizwhiz.quizservice.repository.QuestionRepository
 import com.quizwhiz.quizservice.repository.QuizRepository
 import com.quizwhiz.quizservice.security.JwtTokenProvider
 import jakarta.servlet.http.HttpServletRequest
@@ -14,7 +15,8 @@ import java.util.*
 @Controller
 class QuizController(
     private val quizRepository: QuizRepository,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val questionRepository: QuestionRepository
 ) {
 
     private val log = LoggerFactory.getLogger(QuizController::class.java)
@@ -23,9 +25,7 @@ class QuizController(
     @GetMapping("/quizzes/new")
     fun newQuizForm(request: HttpServletRequest, model: Model): String {
         val token = request.getParameter("token")
-        log.debug("Получен токен: {}", token)
         val courseId = request.getParameter("courseId") ?: ""
-        log.debug("Получен courseId: {}", courseId)
         val quizDto = QuizDto(
             courseId = courseId,
             title = "",
@@ -36,6 +36,13 @@ class QuizController(
         )
         model.addAttribute("quizDto", quizDto)
         model.addAttribute("token", token)
+
+        // Если токен присутствует, получаем имя пользователя и его вопросы
+        if (!token.isNullOrEmpty()) {
+            val username = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
+            val questions = questionRepository.findAllByCreatedBy(username)
+            model.addAttribute("questions", questions)
+        }
         return "newquiz"
     }
 

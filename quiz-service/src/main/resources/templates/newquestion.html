@@ -1,0 +1,102 @@
+<!-- File: src/main/resources/templates/newquestion.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Создание нового вопроса</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style>
+    .hidden { display: none; }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
+<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+  <h1 class="text-2xl font-bold mb-6">Создание нового вопроса</h1>
+  <form th:action="@{'/quizzes/' + ${quizId} + '/questions'}" method="post" class="space-y-4" th:object="${createQuestionDto}">
+    <!-- Скрытое поле для передачи токена -->
+    <input type="hidden" name="token" th:value="${token}" />
+
+    <div>
+      <label class="block text-gray-700 font-medium mb-1">Текст вопроса:</label>
+      <textarea th:field="*{text}" required
+                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+    </div>
+
+    <div>
+      <label class="block text-gray-700 font-medium mb-1">Варианты ответов:</label>
+      <div id="options-container" class="space-y-2">
+        <!-- Вариант 1 (индекс 0) -->
+        <div class="option" id="option-0">
+          <div class="flex items-center">
+            <input type="radio" th:field="*{correctOptionIndex}" value="0" class="mr-2" />
+            <input type="text" th:field="*{options[0]}" placeholder="Вариант 1"
+                   class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+        <!-- Вариант 2 (индекс 1) -->
+        <div class="option" id="option-1">
+          <div class="flex items-center">
+            <input type="radio" th:field="*{correctOptionIndex}" value="1" class="mr-2" />
+            <input type="text" th:field="*{options[1]}" placeholder="Вариант 2"
+                   class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+        <!-- Вариант 3 (индекс 2) -->
+        <div class="option" id="option-2">
+          <div class="flex items-center">
+            <input type="radio" th:field="*{correctOptionIndex}" value="2" class="mr-2" />
+            <input type="text" th:field="*{options[2]}" placeholder="Вариант 3"
+                   class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+        <!-- Вариант 4 (индекс 3) – изначально скрыт -->
+        <div class="option hidden" id="option-3">
+          <div class="flex items-center">
+            <input type="radio" th:field="*{correctOptionIndex}" value="3" class="mr-2" />
+            <input type="text" name="options[3]" placeholder="Вариант 4"
+                   class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+        <!-- Вариант 5 (индекс 4) – изначально скрыт -->
+        <div class="option hidden" id="option-4">
+          <div class="flex items-center">
+            <input type="radio" th:field="*{correctOptionIndex}" value="4" class="mr-2" />
+            <input type="text" name="options[4]" placeholder="Вариант 5"
+                   class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+      </div>
+      <div class="mt-2">
+        <button type="button" id="add-option-btn" class="text-blue-600 hover:underline">Добавить вариант ответа</button>
+      </div>
+    </div>
+
+    <button type="submit"
+            class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+      Сохранить вопрос
+    </button>
+  </form>
+</div>
+
+<script>
+  // JavaScript для добавления дополнительных вариантов (до 5)
+  const addOptionBtn = document.getElementById("add-option-btn");
+  const optionsContainer = document.getElementById("options-container");
+  let currentOptions = 3; // уже видны 3 варианта
+
+  addOptionBtn.addEventListener("click", function () {
+    if (currentOptions < 5) {
+      const optionDiv = document.getElementById("option-" + currentOptions);
+      if (optionDiv) {
+        optionDiv.classList.remove("hidden");
+        currentOptions++;
+        if (currentOptions === 5) {
+          addOptionBtn.disabled = true;
+          addOptionBtn.textContent = "Максимум вариантов";
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

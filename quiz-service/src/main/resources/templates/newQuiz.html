@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Создать квиз</title>
+    <title>Создание квиза</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
 <body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
 <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
     <h1 class="text-2xl font-bold mb-6">Создание нового квиза</h1>
     <form th:action="@{/quizzes}" method="post" class="space-y-4">
-        <!-- Скрытые поля для передачи токена и courseId -->
+        <!-- Скрытые поля -->
         <input type="hidden" name="token" th:value="${token}" />
         <input type="hidden" name="courseId" th:value="${quizDto.courseId}" />
 
@@ -37,6 +37,25 @@
         <div class="flex items-center">
             <input type="checkbox" name="isOpen" th:checked="${quizDto.isOpen}" id="isOpen" class="mr-2"/>
             <label for="isOpen" class="text-gray-700 font-medium">Открыт для прохождения</label>
+        </div>
+
+        <!-- Секция выбора вопросов -->
+        <div class="mt-4">
+            <h2 class="text-xl font-bold mb-2">Выберите вопросы для квиза</h2>
+            <div th:if="${questions != null}">
+                <div th:each="q : ${questions}">
+                    <label class="block">
+                        <input type="checkbox" name="questionIds" th:value="${q.id}" class="mr-2"/>
+                        <span th:text="${q.text}">Текст вопроса</span>
+                    </label>
+                </div>
+            </div>
+            <div class="mt-2">
+                <a th:href="@{'/quizzes/' + ${quizDto.courseId} + '/questions/new'(token=${token})}"
+                   class="text-blue-600 hover:underline">
+                    Создать новый вопрос
+                </a>
+            </div>
         </div>
 
         <button type="submit"
