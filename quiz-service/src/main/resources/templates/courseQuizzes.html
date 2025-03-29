@@ -18,7 +18,11 @@
   <h2 class="text-2xl font-semibold mb-4">Список квизов</h2>
   <ul class="space-y-4">
     <li th:each="quiz : ${quizzes}" class="p-4 bg-gray-100 rounded-lg">
-      <span class="text-xl font-medium" th:text="${quiz.title}">Название квиза</span>
+      <a th:href="@{|/quizzes/${quiz.id}?token=${token}|}"
+         class="text-xl font-medium text-blue-700 hover:underline"
+         th:text="${quiz.title}">
+        Название квиза
+      </a>
     </li>
   </ul>
 
