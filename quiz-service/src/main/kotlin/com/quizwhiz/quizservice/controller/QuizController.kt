@@ -70,6 +70,6 @@ class QuizController(
         log.info("Квиз успешно создан с id: {}", savedQuiz.id)
 
         // Редирект на страницу квизов курса (в сервисе user-profile)
-        return "redirect:http://127.0.0.1:8082/profile/$teacherUsername/courses/${quizDto.courseId}/quizzes?token=$token"
+        return "redirect:http://127.0.0.1:8083/courses/${quizDto.courseId}?token=$token"
     }
 }
