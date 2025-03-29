@@ -3,32 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>Мои курсы</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
-<body>
+<body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
+<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-4xl">
+  <h1 class="text-3xl font-bold mb-4">Мои курсы</h1>
+  <p class="mb-6">
+    Пользователь: <span th:text="${profile.username}" class="font-semibold">Username</span>
+  </p>
 
-<h1>Мои курсы</h1>
-<p>Пользователь: <span th:text="${profile.username}">Username</span></p>
-
-<!-- Кнопка "Создать курс" ведёт на QuizService для создания нового курса.
-     Здесь используется плейсхолдер для передачи token. -->
-<a th:href="@{'http://127.0.0.1:8083/courses/new'(token=${param.token})}">
-  Создать курс
-</a>
-
-<hr/>
-
-<!-- Список курсов -->
-<div th:each="course : ${courses}">
-  <h2>
-    <!-- Каждая ссылка формируется с использованием плейсхолдеров.
-         {courseId} заменится на course.id, {token} – на param.token -->
-    <a th:href="@{|http://127.0.0.1:8083/courses/{courseId}?token={token}|(courseId=${course.id}, token=${param.token})}"
-       th:text="${course.courseName}">
+  <!-- Кнопка "Создать курс" ведёт на QuizService для создания нового курса -->
+  <div class="mb-6">
+    <a th:href="@{'http://127.0.0.1:8083/courses/new'(token=${param.token})}"
+       class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+      Создать курс
     </a>
-  </h2>
-  <p th:text="${course.description}">Описание курса</p>
-  <hr/>
-</div>
+  </div>
 
+  <!-- Список курсов -->
+  <div th:each="course : ${courses}" class="mb-4 p-4 bg-gray-100 rounded-lg">
+    <h2 class="text-2xl font-semibold mb-2">
+      <a th:href="@{|http://127.0.0.1:8083/courses/{courseId}?token={token}|(courseId=${course.id}, token=${param.token})}"
+         th:text="${course.courseName}"
+         class="text-blue-700 hover:underline">
+      </a>
+    </h2>
+    <p th:text="${course.description}" class="text-gray-700"></p>
+  </div>
+</div>
 </body>
 </html>
