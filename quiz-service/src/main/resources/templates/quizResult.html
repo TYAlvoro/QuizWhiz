@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Результаты квиза</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+<body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
+<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+  <h1 class="text-3xl font-bold mb-4">Результаты квиза</h1>
+  <p class="mb-2">Никнейм: <span th:text="${attempt.nickname}">User</span></p>
+  <p class="mb-2">Правильных ответов: <span th:text="${attempt.score}">0</span> из <span th:text="${attempt.totalQuestions}">0</span></p>
+  <p class="mb-4">Ваш результат: <span th:text="${(attempt.score * 100 / attempt.totalQuestions)}">0</span>%</p>
+  <a href="/" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Вернуться на главную</a>
+</div>
+</body>
+</html>

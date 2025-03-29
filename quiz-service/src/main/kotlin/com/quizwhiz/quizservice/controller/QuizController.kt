@@ -21,7 +21,8 @@ class QuizController(
 
     private val log = LoggerFactory.getLogger(QuizController::class.java)
 
-    // Форма для создания нового квиза
+    // Форма для создания нового квиза.
+    // В модель добавляется список вопросов, созданных текущим пользователем (для выбора при создании квиза).
     @GetMapping("/quizzes/new")
     fun newQuizForm(request: HttpServletRequest, model: Model): String {
         val token = request.getParameter("token")
@@ -37,7 +38,6 @@ class QuizController(
         model.addAttribute("quizDto", quizDto)
         model.addAttribute("token", token)
 
-        // Если токен присутствует, получаем имя пользователя и его вопросы
         if (!token.isNullOrEmpty()) {
             val username = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
             val questions = questionRepository.findAllByCreatedBy(username)
@@ -46,7 +46,8 @@ class QuizController(
         return "newquiz"
     }
 
-    // Создание квиза (POST)
+    // Создание квиза (POST).
+    // Сохраняется квиз с выбранными вопросами; если квиз открыт – генерируется публичная ссылка.
     @PostMapping("/quizzes")
     fun createQuiz(
         @ModelAttribute quizDto: QuizDto,
@@ -56,7 +57,6 @@ class QuizController(
         log.debug("Получен токен из формы: {}", token)
         val creatorUsername = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
 
-        // Сохраняем квиз (без publicLink)
         var savedQuiz = quizRepository.save(
             QuizDocument(
                 courseId = quizDto.courseId,
@@ -71,18 +71,16 @@ class QuizController(
             )
         )
 
-        // Если квиз открыт для прохождения, генерируем публичную ссылку
         if (savedQuiz.isOpen) {
             val generatedLink = "http://127.0.0.1:8083/public/quizzes/${savedQuiz.id}"
             savedQuiz = quizRepository.save(savedQuiz.copy(publicLink = generatedLink))
         }
         log.info("Квиз успешно создан с id: {}", savedQuiz.id)
-        // Редирект обратно на страницу курса
         return "redirect:http://127.0.0.1:8083/courses/${quizDto.courseId}?token=$token"
     }
 
-    // Открытие квиза по ссылке /quizzes/{quizId}?token=... для владельца
-    // Если текущий пользователь является создателем, открывается окно редактирования, иначе – окно прохождения
+    // Открытие квиза по ссылке /quizzes/{quizId}?token=... для владельца.
+    // Если текущий пользователь – создатель, открывается окно редактирования, иначе – окно прохождения.
     @GetMapping("/quizzes/{quizId}")
     fun openQuiz(
         @PathVariable quizId: String,
@@ -96,13 +94,13 @@ class QuizController(
         model.addAttribute("token", token)
 
         return if (quiz.creatorUsername == currentUsername) {
-            "editquiz"  // страница редактирования для владельца
+            "editquiz"  // Страница редактирования для владельца
         } else {
-            "takequiz"  // страница прохождения для остальных
+            "takequiz"  // Страница прохождения для остальных
         }
     }
 
-    // Обновление квиза (редактирование)
+    // Обновление квиза (редактирование).
     @PostMapping("/quizzes/update")
     fun updateQuiz(
         @ModelAttribute quizDto: QuizDto,
@@ -111,7 +109,6 @@ class QuizController(
         val token = request.getParameter("token") ?: ""
         val currentUsername = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
 
-        // Ищем существующий квиз
         val existingQuiz = quizRepository.findById(quizDto.id)
             .orElseThrow { RuntimeException("Quiz not found") }
 
@@ -119,7 +116,6 @@ class QuizController(
             throw RuntimeException("Unauthorized update attempt")
         }
 
-        // Обновляем поля квиза
         var updatedQuiz = existingQuiz.copy(
             title = quizDto.title,
             description = quizDto.description,
@@ -128,7 +124,6 @@ class QuizController(
             updatedAt = Date()
         )
 
-        // Если квиз открыт, генерируем (или обновляем) публичную ссылку
         updatedQuiz = if (updatedQuiz.isOpen) {
             val generatedLink = "http://127.0.0.1:8083/public/quizzes/${updatedQuiz.id}"
             quizRepository.save(updatedQuiz.copy(publicLink = generatedLink))

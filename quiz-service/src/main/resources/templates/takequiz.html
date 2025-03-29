@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title><!DOCTYPE html>
-    <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-    <meta charset="UTF-8" />
-    <title>Прохождение квиза</title>
+  <meta charset="UTF-8" />
+  <title th:text="${quiz.title}">Прохождение квиза</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
 <body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
@@ -14,18 +10,13 @@
   <h1 class="text-2xl font-bold mb-6" th:text="${quiz.title}">Название квиза</h1>
   <p class="mb-4" th:text="${quiz.description}">Описание квиза</p>
   <p class="mb-4">Ваш никнейм: <span th:text="${nickname}"></span></p>
-  <!-- Здесь можно разместить вопросы квиза -->
+  <!-- Ссылка, ведущая к прохождению квиза -->
   <div class="mt-6">
-    <button class="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+    <a th:href="@{'/quizzes/' + ${quiz.id} + '/attempt?nickname=' + ${nickname}}"
+       class="w-full block px-4 py-2 bg-green-600 text-white text-center rounded hover:bg-green-700">
       Начать тест
-    </button>
+    </a>
   </div>
 </div>
-</body>
-</html>
-</title>
-</head>
-<body>
-
 </body>
 </html>

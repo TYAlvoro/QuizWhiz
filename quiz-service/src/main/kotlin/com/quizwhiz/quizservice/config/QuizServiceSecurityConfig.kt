@@ -20,7 +20,7 @@ class QuizServiceSecurityConfig(
         http.csrf { it.disable() }
             .authorizeHttpRequests { auth ->
                 // Разрешаем доступ к внутренним endpoint'ам и публичным URL без аутентификации
-                auth.requestMatchers("/internal/**", "/public/**").permitAll()
+                auth.requestMatchers("/internal/**", "/public/**", "/quizzes/*/attempt").permitAll()
                     .anyRequest().authenticated()
             }
             // Наш фильтр для JWT проверяется для остальных URL, но внутренние маршруты уже разрешены

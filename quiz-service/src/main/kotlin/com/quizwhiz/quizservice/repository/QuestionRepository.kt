@@ -5,4 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository
 
 interface QuestionRepository : MongoRepository<QuestionDocument, String> {
     fun findAllByCreatedBy(createdBy: String): List<QuestionDocument>
+    fun findAllByIdIn(ids: List<String>): List<QuestionDocument>
 }
