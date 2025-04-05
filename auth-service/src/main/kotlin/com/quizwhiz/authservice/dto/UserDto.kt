@@ -1,6 +1,6 @@
-package com.quizwhiz.userprofileservice.dto
+package com.quizwhiz.authservice.dto
 
-data class ProfileDto(
+data class UserDto(
     val id: Long,
     val username: String,
     val email: String?,

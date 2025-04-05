@@ -1,6 +1,5 @@
 package com.quizwhiz.userprofileservice.config
 
-import com.quizwhiz.userprofileservice.config.JwtTokenProvider
 import com.quizwhiz.userprofileservice.security.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,15 +17,14 @@ class ProfileSecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
             .authorizeHttpRequests { auth ->
-                auth.requestMatchers("/profile/**").authenticated()
+                auth
+                    .requestMatchers("/profile/**").authenticated()
                     .anyRequest().permitAll()
             }
-            // Добавляем свой фильтр с локальным JwtTokenProvider
             .addFilterBefore(
                 JwtAuthenticationFilter(jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter::class.java
             )
-
         return http.build()
     }
 }

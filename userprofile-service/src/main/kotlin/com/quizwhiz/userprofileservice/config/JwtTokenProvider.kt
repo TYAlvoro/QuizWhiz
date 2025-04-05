@@ -7,10 +7,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class JwtTokenProvider(
-    @Value("\${jwt.secret}")
-    private val jwtSecret: String,
-    @Value("\${jwt.expiration}")
-    private val jwtExpirationInMs: Long
+    @Value("\${jwt.secret}") private val jwtSecret: String,
+    @Value("\${jwt.expiration}") private val jwtExpirationInMs: Long
 ) {
     fun getUsernameFromJWT(token: String): String? {
         val key = Keys.hmacShaKeyFor(jwtSecret.toByteArray())

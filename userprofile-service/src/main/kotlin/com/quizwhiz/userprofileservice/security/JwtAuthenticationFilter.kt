@@ -2,6 +2,7 @@ package com.quizwhiz.userprofileservice.security
 
 import com.quizwhiz.userprofileservice.config.JwtTokenProvider
 import jakarta.servlet.FilterChain
+import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
@@ -21,8 +22,8 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token = request.getParameter("token")
-        if (!token.isNullOrEmpty()) {
+        val token = resolveToken(request)
+        if (token != null) {
             try {
                 val username = jwtTokenProvider.getUsernameFromJWT(token)
                 if (username != null && SecurityContextHolder.getContext().authentication == null) {
@@ -33,8 +34,6 @@ class JwtAuthenticationFilter(
                     )
                     SecurityContextHolder.getContext().authentication = auth
                     logger.debug("Authenticated user: $username")
-                } else {
-                    logger.debug("Username is null or authentication already exists")
                 }
             } catch (ex: Exception) {
                 logger.error("Error validating token", ex)
@@ -42,5 +41,20 @@ class JwtAuthenticationFilter(
             }
         }
         filterChain.doFilter(request, response)
+    }
+
+    private fun resolveToken(request: HttpServletRequest): String? {
+        // Сначала пробуем получить токен из заголовка Authorization
+        val bearerToken = request.getHeader("Authorization")
+        if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7)
+        }
+        // Если заголовка нет, ищем токен в cookies
+        request.cookies?.forEach { cookie ->
+            if (cookie.name == "AUTH_TOKEN") {
+                return cookie.value
+            }
+        }
+        return null
     }
 }

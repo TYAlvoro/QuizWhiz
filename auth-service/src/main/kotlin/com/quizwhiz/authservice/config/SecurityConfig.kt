@@ -28,8 +28,8 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
             .authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers("/login", "/register", "/register/**").permitAll()
+                // Открываем для доступа без аутентификации внутренний endpoint
+                auth.requestMatchers("/internal/users/**", "/login", "/register", "/register/**").permitAll()
                     .anyRequest().authenticated()
             }
             .formLogin { form ->
@@ -38,9 +38,7 @@ class SecurityConfig(
                     .successHandler(customAuthenticationSuccessHandler)
                     .permitAll()
             }
-            .logout { logout ->
-                logout.permitAll()
-            }
+            .logout { logout -> logout.permitAll() }
             .userDetailsService(customUserDetailsService)
         return http.build()
     }
