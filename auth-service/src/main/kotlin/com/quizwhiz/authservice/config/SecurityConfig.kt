@@ -28,9 +28,7 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
             .authorizeHttpRequests { auth ->
-                // Разрешаем публичный доступ ко всем URL, начинающимся с /internal/users/
-                auth.requestMatchers("/internal/users/**").permitAll()
-                    // Также разрешаем доступ к страницам логина и регистрации
+                auth
                     .requestMatchers("/login", "/register", "/register/**").permitAll()
                     .anyRequest().authenticated()
             }

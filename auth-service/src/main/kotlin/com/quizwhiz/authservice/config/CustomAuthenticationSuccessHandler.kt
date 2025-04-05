@@ -1,7 +1,7 @@
 package com.quizwhiz.authservice.config
 
 import com.quizwhiz.authservice.repository.UserRepository
-import com.quizwhiz.authservice.config.JwtTokenProvider
+import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.Authentication
@@ -21,10 +21,19 @@ class CustomAuthenticationSuccessHandler(
     ) {
         val username = authentication.name
         val user = userRepository.findByUsername(username)
-            ?: throw UsernameNotFoundException("User not found with username: $username")
-        // Генерируем JWT (например, со сроком действия 1 час)
+            ?: throw UsernameNotFoundException("User not found: $username")
         val token = jwtTokenProvider.generateToken(user)
-        // Перенаправляем в Profile Service с токеном в параметре
-        response.sendRedirect("http://127.0.0.1:8082/profile/$username?token=$token")
+
+        // Устанавливаем JWT в HTTP-only cookie через метод setHttpOnly()
+        val cookie = Cookie("AUTH_TOKEN", token).apply {
+            setHttpOnly(true)
+            secure = request.isSecure
+            path = "/"
+            maxAge = (jwtTokenProvider.jwtExpirationInMs / 1000).toInt()
+        }
+        response.addCookie(cookie)
+
+        // Перенаправляем на профиль без передачи токена через URL
+        response.sendRedirect("http://127.0.0.1:8082/profile/$username")
     }
 }
