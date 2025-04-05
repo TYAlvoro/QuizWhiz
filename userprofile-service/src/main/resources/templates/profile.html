@@ -12,26 +12,67 @@
 <div class="container mx-auto p-6">
   <h1 class="text-3xl font-bold mb-6 text-center">Профиль пользователя</h1>
   <div class="bg-white shadow rounded-lg p-8 flex flex-col md:flex-row gap-6">
-    <!-- Левая колонка: профиль -->
+    <!-- Левая колонка: информация о пользователе -->
     <div class="w-full md:w-1/3 flex flex-col items-center">
-      <div class="w-32 h-32 bg-gray-300 rounded-full bg-center bg-cover" style="background-image: url('https://via.placeholder.com/150');"></div>
+      <div class="w-32 h-32 bg-gray-300 rounded-full bg-center bg-cover"
+           style="background-image: url('https://via.placeholder.com/150');"></div>
       <h2 class="mt-4 text-2xl font-bold" th:text="${profile.username}">Имя пользователя</h2>
       <p class="text-gray-600" th:text="${profile.email}">email@пример.ru</p>
       <p class="text-gray-600" th:text="${profile.role}">Роль</p>
     </div>
-    <!-- Правая колонка: данные и дополнительная информация -->
-    <div class="w-full md:w-2/3 flex flex-col justify-center">
-      <div class="mb-4 text-center">
-        <a th:href="@{'/profile/' + ${profile.username} + '/courses'}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
+    <!-- Правая колонка: кнопка, дополнительная информация, статистика -->
+    <div class="w-full md:w-2/3 flex flex-col gap-6">
+      <!-- Кнопка "Мои курсы" -->
+      <div class="text-center">
+        <a th:href="@{'/profile/' + ${profile.username} + '/courses'}"
+           class="inline-block px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
           Мои курсы
         </a>
       </div>
-      <!-- Блок дополнительной информации -->
-      <div class="bg-gray-50 p-4 rounded shadow">
-        <h3 class="text-xl font-semibold mb-2">Дополнительная информация</h3>
-        <p class="text-gray-700">
-          Здесь можно разместить описание, статистику, последние достижения или любые другие данные о пользователе.
+      <!-- Блок "Интересный факт дня" -->
+      <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+        <h4 class="font-bold text-lg mb-1">Интересный факт дня</h4>
+        <p class="text-gray-600 text-sm">
+          Знаете ли вы, что регулярное прохождение квизов улучшает память и концентрацию?
         </p>
+      </div>
+      <!-- Статистика: Последние пройденные квизы -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Последние пройденные квизы</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Болванки для квизов – заменить динамическими данными -->
+          <div class="bg-gray-50 p-4 rounded shadow">
+            <p class="font-bold">Квиз 1</p>
+            <p class="text-gray-600 text-sm">Результат: 80%</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded shadow">
+            <p class="font-bold">Квиз 2</p>
+            <p class="text-gray-600 text-sm">Результат: 90%</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded shadow">
+            <p class="font-bold">Квиз 3</p>
+            <p class="text-gray-600 text-sm">Результат: 75%</p>
+          </div>
+        </div>
+      </div>
+      <!-- Статистика: Последние курсы -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Последние курсы</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Болванки для курсов – заменить динамическими данными -->
+          <div class="bg-gray-50 p-4 rounded shadow">
+            <p class="font-bold">Курс 1</p>
+            <p class="text-gray-600 text-sm">Описание курса</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded shadow">
+            <p class="font-bold">Курс 2</p>
+            <p class="text-gray-600 text-sm">Описание курса</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded shadow">
+            <p class="font-bold">Курс 3</p>
+            <p class="text-gray-600 text-sm">Описание курса</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
