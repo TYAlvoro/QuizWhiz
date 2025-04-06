@@ -1,7 +1,14 @@
+// File: src/main/kotlin/com/quizwhiz/authservice/controller/RegistrationController.kt
 package com.quizwhiz.authservice.controller
 
 import com.quizwhiz.authservice.dto.RegistrationRequest
+import com.quizwhiz.authservice.model.User
+import com.quizwhiz.authservice.repository.UserRepository
 import com.quizwhiz.authservice.service.AuthService
+import com.quizwhiz.authservice.config.JwtTokenProvider
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -11,27 +18,57 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 
 @Controller
-class RegistrationController(private val authService: AuthService) {
+class RegistrationController(
+    private val authService: AuthService,
+    private val userRepository: UserRepository,
+    private val jwtTokenProvider: JwtTokenProvider
+) {
 
     @GetMapping("/register")
-    fun showRegistrationForm(model: Model): String {
+    fun showRegistrationForm(model: Model, request: HttpServletRequest): String {
+        // Сохраняем параметр redirectUrl, если он есть
+        val redirectUrl = request.getParameter("redirectUrl")
+        model.addAttribute("redirectUrl", redirectUrl)
         model.addAttribute("registrationRequest", RegistrationRequest("", "", "USER", ""))
-        return "register"
+        return "register"  // шаблон register.html
     }
 
     @PostMapping("/register")
     fun processRegistrationForm(
         @Valid @ModelAttribute registrationRequest: RegistrationRequest,
         bindingResult: BindingResult,
-        model: Model
+        model: Model,
+        request: HttpServletRequest,
+        response: HttpServletResponse
     ): String {
-        if (bindingResult.hasErrors()) return "register"
+        if (bindingResult.hasErrors()) {
+            return "register"
+        }
         try {
             authService.register(registrationRequest)
+            val user: User = userRepository.findByUsername(registrationRequest.username)
+                ?: throw RuntimeException("User not found after registration")
+            val token = jwtTokenProvider.generateToken(user)
+            val cookie = Cookie("JWT", token).apply {
+                isHttpOnly = true
+                path = "/"
+                maxAge = (jwtTokenProvider.getJwtExpirationInMs() / 1000).toInt()
+            }
+            response.addCookie(cookie)
         } catch (e: Exception) {
             model.addAttribute("error", e.message)
             return "register"
         }
-        return "redirect:http://127.0.0.1:8082/profile/${registrationRequest.username}"
+        val redirectUrl = request.getParameter("redirectUrl")
+        val targetUrl = if (!redirectUrl.isNullOrBlank()) {
+            if (redirectUrl.contains("?")) {
+                "$redirectUrl&nickname=${registrationRequest.username}"
+            } else {
+                "$redirectUrl?nickname=${registrationRequest.username}"
+            }
+        } else {
+            "http://127.0.0.1:8082/profile/${registrationRequest.username}"
+        }
+        return "redirect:$targetUrl"
     }
 }

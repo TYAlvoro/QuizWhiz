@@ -14,7 +14,6 @@ class CustomAuthenticationSuccessHandler(
     private val jwtTokenProvider: JwtTokenProvider,
     private val userRepository: UserRepository
 ) : AuthenticationSuccessHandler {
-
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -23,14 +22,21 @@ class CustomAuthenticationSuccessHandler(
         val username = authentication.name
         val user = userRepository.findByUsername(username)
             ?: throw UsernameNotFoundException("User not found with username: $username")
+        // Генерация JWT для авторизованного пользователя
         val token = jwtTokenProvider.generateToken(user)
-        // Устанавливаем JWT в HttpOnly cookie
+        // Устанавливаем JWT в HttpOnly cookie для использования во всех эндпоинтах
         val cookie = Cookie("JWT", token).apply {
             setHttpOnly(true)
             path = "/"
             maxAge = (jwtTokenProvider.getJwtExpirationInMs() / 1000).toInt()
         }
         response.addCookie(cookie)
-        response.sendRedirect("http://127.0.0.1:8082/profile/$username")
+        // Если присутствует параметр redirectUrl – перенаправляем пользователя туда, иначе – на страницу профиля
+        val redirectUrl = request.getParameter("redirectUrl")
+        if (!redirectUrl.isNullOrEmpty()) {
+            response.sendRedirect(redirectUrl)
+        } else {
+            response.sendRedirect("http://127.0.0.1:8082/profile/$username")
+        }
     }
 }

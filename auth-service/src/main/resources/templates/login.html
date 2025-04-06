@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>Вход в систему</title>
   <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" as="style" onload="this.rel='stylesheet'">
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap"
+        as="style" onload="this.rel='stylesheet'">
   <link rel="icon" href="data:image/x-icon;base64," type="image/x-icon" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
@@ -13,6 +15,8 @@
   <div class="bg-white shadow rounded-lg p-8 w-full max-w-md">
     <h1 class="text-2xl font-bold mb-6 text-center">Вход в систему</h1>
     <form th:action="@{/login}" method="post" class="space-y-4">
+      <!-- Скрытое поле для передачи redirectUrl -->
+      <input type="hidden" name="redirectUrl" th:value="${param.redirectUrl}" />
       <div>
         <label for="username" class="block font-semibold mb-1">Имя пользователя</label>
         <input type="text" id="username" name="username" placeholder="Введите имя пользователя" required
@@ -23,13 +27,15 @@
         <input type="password" id="password" name="password" placeholder="Введите пароль" required
                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
-      <button type="submit"
-              class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
+      <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
         Войти
       </button>
     </form>
     <div class="mt-4 text-center">
-      <a th:href="@{/register}" class="text-blue-600 hover:underline">Нет аккаунта? Зарегистрируйтесь</a>
+      <!-- Передаем redirectUrl в ссылке на регистрацию -->
+      <a th:href="@{/register(redirectUrl=${param.redirectUrl})}" class="text-blue-600 hover:underline">
+        Нет аккаунта? Зарегистрируйтесь
+      </a>
     </div>
   </div>
 </div>
