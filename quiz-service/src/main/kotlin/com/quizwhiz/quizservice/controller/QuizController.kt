@@ -22,8 +22,6 @@ class QuizController(
     private val questionRepository: QuestionRepository
 ) {
 
-    private val log = LoggerFactory.getLogger(QuizController::class.java)
-
     @GetMapping("/quizzes/new")
     fun newQuizForm(request: HttpServletRequest, model: Model): String {
         val token = extractToken(request)

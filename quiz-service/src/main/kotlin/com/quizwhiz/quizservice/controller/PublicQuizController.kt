@@ -25,16 +25,13 @@ class PublicQuizController(
         request: HttpServletRequest,
         model: Model
     ): String {
-        // Попытка извлечь JWT из заголовка или cookie
         val token = extractToken(request)
         if (token.isNullOrEmpty()) {
-            // Если пользователь не авторизован – перенаправляем его на сервис авторизации с параметром redirectUrl
             val currentUrl = request.requestURL.toString() +
                     if (!request.queryString.isNullOrEmpty()) "?" + request.queryString else ""
             val encodedUrl = URLEncoder.encode(currentUrl, "UTF-8")
             return "redirect:http://127.0.0.1:8081/login?redirectUrl=$encodedUrl"
         }
-        // Если токен есть, извлекаем username и подставляем его вместо временного nick
         val username = jwtTokenProvider.getUsernameFromJWT(token)
             ?: throw RuntimeException("Invalid token")
         val quiz = quizRepository.findById(quizId)

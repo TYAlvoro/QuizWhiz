@@ -14,8 +14,6 @@ class JwtAuthenticationFilter(
     private val jwtTokenProvider: JwtTokenProvider
 ) : OncePerRequestFilter() {
 
-    private val logger = LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,

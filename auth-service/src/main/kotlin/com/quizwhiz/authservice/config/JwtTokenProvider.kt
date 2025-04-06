@@ -30,11 +30,5 @@ class JwtTokenProvider(
             .compact()
     }
 
-    fun getUsernameFromJWT(token: String): String? {
-        val key = Keys.hmacShaKeyFor(jwtSecret.toByteArray())
-        val claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).body
-        return claims["username"] as? String
-    }
-
     fun getJwtExpirationInMs(): Long = jwtExpirationInMs
 }

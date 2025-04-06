@@ -1,4 +1,3 @@
-// File: src/main/kotlin/com/quizwhiz/authservice/controller/RegistrationController.kt
 package com.quizwhiz.authservice.controller
 
 import com.quizwhiz.authservice.dto.RegistrationRequest
@@ -26,7 +25,6 @@ class RegistrationController(
 
     @GetMapping("/register")
     fun showRegistrationForm(model: Model, request: HttpServletRequest): String {
-        // Сохраняем параметр redirectUrl, если он есть
         val redirectUrl = request.getParameter("redirectUrl")
         model.addAttribute("redirectUrl", redirectUrl)
         model.addAttribute("registrationRequest", RegistrationRequest("", "", "USER", ""))

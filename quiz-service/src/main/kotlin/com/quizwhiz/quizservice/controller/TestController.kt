@@ -23,8 +23,6 @@ class TestController(
     private val quizAttemptRepository: QuizAttemptRepository
 ) {
 
-    private val log = LoggerFactory.getLogger(TestController::class.java)
-
     @PermitAll
     @GetMapping("/quizzes/{quizId}/attempt")
     fun showQuizAttemptPage(

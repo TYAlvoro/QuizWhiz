@@ -20,7 +20,6 @@ class CourseController(
     private val userCourseRepository: UserCourseRepository,
     private val jwtTokenProvider: JwtTokenProvider
 ) {
-    private val log = LoggerFactory.getLogger(CourseController::class.java)
 
     @GetMapping("/courses/new")
     fun newCourseForm(request: HttpServletRequest, model: Model): String {
