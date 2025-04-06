@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Выгрузка результатов</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+<body class="bg-gray-100" style="font-family: 'Plus Jakarta Sans','Noto Sans',sans-serif;">
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6 text-center">Выгрузка результатов</h1>
+
+  <!-- Блок для квизов -->
+  <div>
+    <h2 class="text-2xl font-bold mb-4">Доступные квизы для выгрузки</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div th:each="quiz : ${quizzes}" class="bg-white p-4 rounded shadow hover:shadow-lg transition-shadow">
+        <h3 class="text-xl font-semibold mb-2" th:text="${quiz.title}">Название квиза</h3>
+        <p class="text-gray-600 mb-4" th:text="${quiz.description}">Описание квиза</p>
+        <a th:href="@{'/export/quiz/' + ${quiz.id}}"
+           class="block text-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
+          Выгрузить квиз
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Блок для курсов -->
+  <div class="mt-12">
+    <h2 class="text-2xl font-bold mb-4">Доступные курсы для выгрузки</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div th:each="course : ${courses}" class="bg-white p-4 rounded shadow hover:shadow-lg transition-shadow">
+        <h3 class="text-xl font-semibold mb-2" th:text="${course.courseName}">Название курса</h3>
+        <p class="text-gray-600 mb-4" th:text="${course.description}">Описание курса</p>
+        <a th:href="@{'/export/course/' + ${course.id}}"
+           class="block text-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold">
+          Выгрузить курс
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
