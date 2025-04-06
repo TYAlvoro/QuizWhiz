@@ -1,3 +1,4 @@
+
 package com.quizwhiz.quizservice.model
 
 import jakarta.persistence.*

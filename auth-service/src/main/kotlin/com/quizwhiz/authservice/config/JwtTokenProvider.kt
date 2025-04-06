@@ -1,3 +1,4 @@
+// File: src/main/kotlin/com/quizwhiz/authservice/config/JwtTokenProvider.kt
 package com.quizwhiz.authservice.config
 
 import com.quizwhiz.authservice.model.User
@@ -10,8 +11,10 @@ import java.util.*
 
 @Component
 class JwtTokenProvider(
-    @Value("\${jwt.secret}") private val jwtSecret: String,
-    @Value("\${jwt.expiration}") val jwtExpirationInMs: Long
+    @Value("\${jwt.secret}")
+    private val jwtSecret: String,
+    @Value("\${jwt.expiration}")
+    private val jwtExpirationInMs: Long
 ) {
     fun generateToken(user: User): String {
         val now = Date()
@@ -36,4 +39,7 @@ class JwtTokenProvider(
             .body
         return claims["username"] as? String
     }
+
+    // Новый публичный геттер для срока действия токена
+    fun getJwtExpirationInMs(): Long = jwtExpirationInMs
 }

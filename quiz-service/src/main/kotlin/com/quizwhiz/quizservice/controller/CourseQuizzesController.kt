@@ -1,15 +1,15 @@
+// File: src/main/kotlin/com/quizwhiz/quizservice/controller/CourseQuizzesController.kt
 package com.quizwhiz.quizservice.controller
 
 import com.quizwhiz.quizservice.model.CourseEntity
-import com.quizwhiz.quizservice.document.QuizDocument
 import com.quizwhiz.quizservice.repository.CourseRepository
 import com.quizwhiz.quizservice.repository.QuizRepository
 import com.quizwhiz.quizservice.security.JwtTokenProvider
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestParam
 
 @Controller
 class CourseQuizzesController(
@@ -21,30 +21,37 @@ class CourseQuizzesController(
     @GetMapping("/courses/{courseId}")
     fun showCourseQuizzes(
         @PathVariable courseId: Long,
-        @RequestParam token: String, // получаем token как request param
+        request: HttpServletRequest,
         model: Model
     ): String {
-        // 1) Проверяем токен и извлекаем username
-        val username = jwtTokenProvider.getUsernameFromJWT(token)
+        // Извлекаем JWT из заголовка или cookie
+        val token = extractToken(request)
+        val username = token?.let { jwtTokenProvider.getUsernameFromJWT(it) }
             ?: throw RuntimeException("Invalid token")
 
-        // 2) Находим курс по ID (из PostgreSQL)
-        val course: CourseEntity = courseRepository.findById(courseId).orElseThrow {
-            RuntimeException("Course not found")
-        }
+        // Получаем курс по ID (если курс не найден, выбрасываем исключение)
+        val course: CourseEntity = courseRepository.findById(courseId)
+            .orElseThrow { RuntimeException("Course not found") }
 
-        // 3) Находим квизы для этого курса в MongoDB.
-        // Предполагаем, что в коллекции квизов поле courseId хранится как строка,
-        // поэтому преобразуем courseId в строку.
-        val quizzes: List<QuizDocument> = quizRepository.findAllByCourseId(courseId.toString())
-
-        // 4) Добавляем данные в модель
-        model.addAttribute("course", course)
-        model.addAttribute("quizzes", quizzes)
-        model.addAttribute("token", token)
+        // Добавляем в модель необходимые атрибуты
         model.addAttribute("username", username)
+        model.addAttribute("course", course)
 
-        // 5) Возвращаем шаблон, например, "courseQuizzes"
+        // Получаем квизы для данного курса (предполагается, что идентификатор курса хранится как строка)
+        val quizzes = quizRepository.findAllByCourseId(courseId.toString())
+        model.addAttribute("quizzes", quizzes)
+
         return "courseQuizzes"
+    }
+
+    private fun extractToken(request: HttpServletRequest): String? {
+        val bearerToken = request.getHeader("Authorization")
+        if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7)
+        }
+        request.cookies?.forEach {
+            if (it.name == "JWT") return it.value
+        }
+        return null
     }
 }

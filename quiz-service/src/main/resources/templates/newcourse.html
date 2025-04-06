@@ -1,3 +1,4 @@
+<!-- File: src/main/resources/templates/newcourse.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -8,9 +9,8 @@
 <body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
 <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
   <h1 class="text-2xl font-bold mb-6">Создание нового курса</h1>
+  <!-- token-поле убрано -->
   <form th:action="@{/courses}" method="post" class="space-y-4">
-    <!-- Скрытые поля для передачи токена и идентификаторов -->
-    <input type="hidden" name="token" th:value="${token}" />
     <input type="hidden" name="id" th:value="${courseDto.id}" />
     <input type="hidden" name="teacherId" th:value="${courseDto.teacherId}" />
 

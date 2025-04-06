@@ -1,3 +1,4 @@
+<!-- File: src/main/resources/templates/courseQuizzes.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -18,7 +19,7 @@
   <h2 class="text-2xl font-semibold mb-4">Список квизов</h2>
   <ul class="space-y-4">
     <li th:each="quiz : ${quizzes}" class="p-4 bg-gray-100 rounded-lg">
-      <a th:href="@{|/quizzes/${quiz.id}?token=${token}|}"
+      <a th:href="@{'/quizzes/' + ${quiz.id}}"
          class="text-xl font-medium text-blue-700 hover:underline"
          th:text="${quiz.title}">
         Название квиза
@@ -28,7 +29,7 @@
 
   <!-- Кнопка создания нового квиза -->
   <div class="mt-6">
-    <a th:href="@{|/quizzes/new?token=${token}&courseId=${course.id}|}"
+    <a th:href="@{'/quizzes/new?courseId=' + ${course.id}}"
        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
       Создать квиз
     </a>

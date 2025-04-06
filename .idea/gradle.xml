@@ -20,6 +20,22 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/courses-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/courses-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/quiz-content-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/quiz-content-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/quiz-service" />
         <option name="modules">
           <set>

@@ -19,14 +19,23 @@ class MyCoursesController(
         @PathVariable username: String,
         model: Model
     ): String {
+        // 1) Проверяем аутентификацию
         val auth = SecurityContextHolder.getContext().authentication
         if (auth == null || auth.name != username) {
             return "redirect:/login"
         }
+
+        // 2) Получаем профиль
         val profile: ProfileDto = profileService.getProfile(username)
+
+        // 3) Вызываем Feign-клиент quizService, чтобы получить курсы по teacherId
         val courses = quizServiceClient.getCoursesByTeacherId(profile.id)
+
+        // 4) Кладём в model
         model.addAttribute("profile", profile)
         model.addAttribute("courses", courses)
+
+        // 5) Возвращаем шаблон mycourses.html
         return "mycourses"
     }
 }

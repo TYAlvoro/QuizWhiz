@@ -9,8 +9,11 @@ import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.*
-import java.util.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import java.util.Date
 
 @Controller
 class QuizController(
@@ -21,11 +24,9 @@ class QuizController(
 
     private val log = LoggerFactory.getLogger(QuizController::class.java)
 
-    // Форма для создания нового квиза.
-    // В модель добавляется список вопросов, созданных текущим пользователем (для выбора при создании квиза).
     @GetMapping("/quizzes/new")
     fun newQuizForm(request: HttpServletRequest, model: Model): String {
-        val token = request.getParameter("token")
+        val token = extractToken(request)
         val courseId = request.getParameter("courseId") ?: ""
         val quizDto = QuizDto(
             courseId = courseId,
@@ -37,7 +38,6 @@ class QuizController(
         )
         model.addAttribute("quizDto", quizDto)
         model.addAttribute("token", token)
-
         if (!token.isNullOrEmpty()) {
             val username = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
             val questions = questionRepository.findAllByCreatedBy(username)
@@ -46,17 +46,13 @@ class QuizController(
         return "newquiz"
     }
 
-    // Создание квиза (POST).
-    // Сохраняется квиз с выбранными вопросами; если квиз открыт – генерируется публичная ссылка.
     @PostMapping("/quizzes")
     fun createQuiz(
         @ModelAttribute quizDto: QuizDto,
         request: HttpServletRequest
     ): String {
-        val token = request.getParameter("token") ?: ""
-        log.debug("Получен токен из формы: {}", token)
+        val token = extractToken(request) ?: ""
         val creatorUsername = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
-
         var savedQuiz = quizRepository.save(
             QuizDocument(
                 courseId = quizDto.courseId,
@@ -70,52 +66,40 @@ class QuizController(
                 updatedAt = Date()
             )
         )
-
         if (savedQuiz.isOpen) {
             val generatedLink = "http://127.0.0.1:8083/public/quizzes/${savedQuiz.id}"
             savedQuiz = quizRepository.save(savedQuiz.copy(publicLink = generatedLink))
         }
-        log.info("Квиз успешно создан с id: {}", savedQuiz.id)
-        return "redirect:http://127.0.0.1:8083/courses/${quizDto.courseId}?token=$token"
+        return "redirect:http://127.0.0.1:8083/courses/${quizDto.courseId}"
     }
 
-    // Открытие квиза по ссылке /quizzes/{quizId}?token=... для владельца.
-    // Если текущий пользователь – создатель, открывается окно редактирования, иначе – окно прохождения.
     @GetMapping("/quizzes/{quizId}")
     fun openQuiz(
         @PathVariable quizId: String,
-        @RequestParam token: String,
+        request: HttpServletRequest,
         model: Model
     ): String {
+        val token = extractToken(request) ?: throw RuntimeException("Token is missing")
         val currentUsername = jwtTokenProvider.getUsernameFromJWT(token)
             ?: throw RuntimeException("Invalid token")
         val quiz = quizRepository.findById(quizId).orElseThrow { RuntimeException("Quiz not found") }
         model.addAttribute("quiz", quiz)
         model.addAttribute("token", token)
-
-        return if (quiz.creatorUsername == currentUsername) {
-            "editquiz"  // Страница редактирования для владельца
-        } else {
-            "takequiz"  // Страница прохождения для остальных
-        }
+        return if (quiz.creatorUsername == currentUsername) "editquiz" else "takequiz"
     }
 
-    // Обновление квиза (редактирование).
     @PostMapping("/quizzes/update")
     fun updateQuiz(
         @ModelAttribute quizDto: QuizDto,
         request: HttpServletRequest
     ): String {
-        val token = request.getParameter("token") ?: ""
+        val token = extractToken(request) ?: ""
         val currentUsername = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
-
         val existingQuiz = quizRepository.findById(quizDto.id)
             .orElseThrow { RuntimeException("Quiz not found") }
-
         if (existingQuiz.creatorUsername != currentUsername) {
             throw RuntimeException("Unauthorized update attempt")
         }
-
         var updatedQuiz = existingQuiz.copy(
             title = quizDto.title,
             description = quizDto.description,
@@ -123,14 +107,26 @@ class QuizController(
             isOpen = quizDto.isOpen,
             updatedAt = Date()
         )
-
         updatedQuiz = if (updatedQuiz.isOpen) {
             val generatedLink = "http://127.0.0.1:8083/public/quizzes/${updatedQuiz.id}"
             quizRepository.save(updatedQuiz.copy(publicLink = generatedLink))
         } else {
             quizRepository.save(updatedQuiz.copy(publicLink = null))
         }
+        return "redirect:http://127.0.0.1:8083/courses/${updatedQuiz.courseId}"
+    }
 
-        return "redirect:http://127.0.0.1:8083/courses/${updatedQuiz.courseId}?token=$token"
+    private fun extractToken(request: HttpServletRequest): String? {
+        val bearerToken = request.getHeader("Authorization")
+        if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7)
+        }
+        val cookies = request.cookies
+        if (cookies != null) {
+            cookies.forEach {
+                if (it.name == "JWT") return it.value
+            }
+        }
+        return null
     }
 }

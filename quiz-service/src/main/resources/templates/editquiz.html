@@ -1,3 +1,4 @@
+<!-- File: src/main/resources/templates/editquiz.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -19,7 +20,7 @@
   <h1 class="text-2xl font-bold mb-6">Редактирование квиза</h1>
   <form th:action="@{/quizzes/update}" method="post" class="space-y-4">
     <!-- Скрытые поля -->
-    <input type="hidden" name="token" th:value="${token}" />
+    <!-- (token удалён) -->
     <input type="hidden" name="id" th:value="${quiz.id}" />
     <input type="hidden" name="courseId" th:value="${quiz.courseId}" />
 
@@ -50,7 +51,7 @@
       <label for="isOpen" class="text-gray-700 font-medium">Открыт для прохождения</label>
     </div>
 
-    <!-- Отображение публичной ссылки, если квиз открыт -->
+    <!-- Публичная ссылка, если isOpen = true -->
     <div th:if="${quiz.isOpen}" class="mt-4">
       <label class="block text-gray-700 font-medium mb-1">Публичная ссылка для прохождения:</label>
       <input type="text" id="publicLink" th:value="${quiz.publicLink}" readonly

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import java.util.*
+import java.util.Date
 
 @Controller
 class QuestionController(
@@ -22,50 +22,44 @@ class QuestionController(
 
     private val log = LoggerFactory.getLogger(QuestionController::class.java)
 
-    // Форма создания нового вопроса внутри процесса создания квиза
     @GetMapping("/quizzes/{quizId}/questions/new")
     fun newQuestionForm(
         @PathVariable quizId: String,
         request: HttpServletRequest,
         model: Model
     ): String {
-        val token = request.getParameter("token")
-        // Извлекаем имя пользователя из токена
-        val username = jwtTokenProvider.getUsernameFromJWT(token ?: "")
+        val token = extractToken(request) ?: throw RuntimeException("Token is missing")
+        val username = jwtTokenProvider.getUsernameFromJWT(token)
             ?: throw RuntimeException("Invalid token")
-        // Создаем пустой DTO для формы с тремя пустыми вариантами по умолчанию
         val createQuestionDto = CreateQuestionDto(
             options = mutableListOf("", "", "")
         )
         model.addAttribute("createQuestionDto", createQuestionDto)
         model.addAttribute("quizId", quizId)
+        // Если шаблон ожидает token – можно добавить, хотя он уже хранится в cookie
         model.addAttribute("token", token)
-        return "newquestion" // шаблон newquestion.html
+        return "newquestion"
     }
 
-    // Обработка создания нового вопроса
     @PostMapping("/quizzes/{quizId}/questions")
     fun createQuestion(
         @PathVariable quizId: String,
         @ModelAttribute createQuestionDto: CreateQuestionDto,
         request: HttpServletRequest
     ): String {
-        val token = request.getParameter("token") ?: ""
+        val token = extractToken(request) ?: ""
         val username = jwtTokenProvider.getUsernameFromJWT(token)
             ?: throw RuntimeException("Invalid token")
 
-        // Проверяем, что пользователь указал как минимум 3 варианта ответа
         if (createQuestionDto.options.size < 3) {
             throw RuntimeException("Нужно указать как минимум 3 варианта ответа")
         }
-        // Проверяем, что выбран правильный вариант
         val correctIndex = createQuestionDto.correctOptionIndex
             ?: throw RuntimeException("Не выбран правильный ответ")
         if (correctIndex !in 0 until createQuestionDto.options.size) {
             throw RuntimeException("Неверный индекс правильного ответа")
         }
 
-        // Создаем новый вопрос
         val newQuestion = QuestionDocument(
             text = createQuestionDto.text,
             options = createQuestionDto.options,
@@ -76,8 +70,20 @@ class QuestionController(
         )
         questionRepository.save(newQuestion)
         log.info("Вопрос создан с id: {}", newQuestion.id)
-        // После создания вопроса перенаправляем обратно на страницу создания квиза.
-        // Параметр quizId здесь используется для возврата на страницу создания квиза.
-        return "redirect:/quizzes/new?token=$token&courseId=$quizId"
+        return "redirect:/quizzes/new?courseId=$quizId"
+    }
+
+    private fun extractToken(request: HttpServletRequest): String? {
+        val bearerToken = request.getHeader("Authorization")
+        if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7)
+        }
+        val cookies = request.cookies
+        if (cookies != null) {
+            cookies.forEach {
+                if (it.name == "JWT") return it.value
+            }
+        }
+        return null
     }
 }

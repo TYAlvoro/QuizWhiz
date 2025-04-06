@@ -1,4 +1,3 @@
-// File: src/main/kotlin/com/quizwhiz/quizservice/document/QuestionDocument.kt
 package com.quizwhiz.quizservice.document
 
 import org.springframework.data.annotation.Id

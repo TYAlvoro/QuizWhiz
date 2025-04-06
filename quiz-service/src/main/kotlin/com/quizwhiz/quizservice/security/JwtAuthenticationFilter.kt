@@ -1,6 +1,5 @@
 package com.quizwhiz.quizservice.security
 
-import com.quizwhiz.quizservice.security.JwtTokenProvider
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -21,7 +20,7 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token = request.getParameter("token")
+        val token = extractToken(request)
         if (!token.isNullOrEmpty()) {
             try {
                 val username = jwtTokenProvider.getUsernameFromJWT(token)
@@ -42,5 +41,19 @@ class JwtAuthenticationFilter(
             }
         }
         filterChain.doFilter(request, response)
+    }
+
+    private fun extractToken(request: HttpServletRequest): String? {
+        val bearerToken = request.getHeader("Authorization")
+        if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7)
+        }
+        val cookies = request.cookies
+        if (cookies != null) {
+            cookies.forEach {
+                if (it.name == "JWT") return it.value
+            }
+        }
+        return null
     }
 }

@@ -12,10 +12,8 @@
 <body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
 <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
   <h1 class="text-2xl font-bold mb-6">Создание нового вопроса</h1>
+  <!-- token-поле убрано -->
   <form th:action="@{'/quizzes/' + ${quizId} + '/questions'}" method="post" class="space-y-4" th:object="${createQuestionDto}">
-    <!-- Скрытое поле для передачи токена -->
-    <input type="hidden" name="token" th:value="${token}" />
-
     <div>
       <label class="block text-gray-700 font-medium mb-1">Текст вопроса:</label>
       <textarea th:field="*{text}" required
@@ -25,7 +23,7 @@
     <div>
       <label class="block text-gray-700 font-medium mb-1">Варианты ответов:</label>
       <div id="options-container" class="space-y-2">
-        <!-- Вариант 1 (индекс 0) -->
+        <!-- Вариант 1 -->
         <div class="option" id="option-0">
           <div class="flex items-center">
             <input type="radio" th:field="*{correctOptionIndex}" value="0" class="mr-2" />
@@ -33,7 +31,7 @@
                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
-        <!-- Вариант 2 (индекс 1) -->
+        <!-- Вариант 2 -->
         <div class="option" id="option-1">
           <div class="flex items-center">
             <input type="radio" th:field="*{correctOptionIndex}" value="1" class="mr-2" />
@@ -41,7 +39,7 @@
                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
-        <!-- Вариант 3 (индекс 2) -->
+        <!-- Вариант 3 -->
         <div class="option" id="option-2">
           <div class="flex items-center">
             <input type="radio" th:field="*{correctOptionIndex}" value="2" class="mr-2" />
@@ -49,7 +47,7 @@
                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
-        <!-- Вариант 4 (индекс 3) – изначально скрыт -->
+        <!-- Варианты 4 и 5 по умолчанию скрыты -->
         <div class="option hidden" id="option-3">
           <div class="flex items-center">
             <input type="radio" th:field="*{correctOptionIndex}" value="3" class="mr-2" />
@@ -57,7 +55,6 @@
                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
-        <!-- Вариант 5 (индекс 4) – изначально скрыт -->
         <div class="option hidden" id="option-4">
           <div class="flex items-center">
             <input type="radio" th:field="*{correctOptionIndex}" value="4" class="mr-2" />
@@ -81,7 +78,6 @@
 <script>
   // JavaScript для добавления дополнительных вариантов (до 5)
   const addOptionBtn = document.getElementById("add-option-btn");
-  const optionsContainer = document.getElementById("options-container");
   let currentOptions = 3; // уже видны 3 варианта
 
   addOptionBtn.addEventListener("click", function () {

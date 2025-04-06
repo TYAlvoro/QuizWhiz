@@ -1,25 +1,36 @@
+<!-- File: src/main/resources/templates/mycourses.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Мои курсы</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" as="style" onload="this.rel='stylesheet'">
-  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
-<body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center" style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;">
-<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-5xl mx-4">
-  <h1 class="text-3xl font-bold mb-6 text-center">Мои курсы</h1>
-  <p class="text-center text-lg mb-4">Пользователь: <span th:text="${profile.username}">Username</span></p>
-  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-    <div th:each="course : ${courses}" class="bg-gray-100 p-4 rounded-lg shadow">
-      <h2 class="text-xl font-bold mb-2" th:text="${course.courseName}">Название курса</h2>
-      <p class="text-gray-700 mb-4" th:text="${course.description}">Описание курса</p>
-      <a th:href="@{'/courses/' + ${course.id}}" class="block text-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
-        Открыть курс
+<body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
+<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-4xl">
+  <h1 class="text-3xl font-bold mb-4">Мои курсы</h1>
+  <p class="mb-6">
+    Пользователь: <span th:text="${profile.username}" class="font-semibold">Username</span>
+  </p>
+
+  <!-- Кнопка "Создать курс" – без передачи token в URL -->
+  <div class="mb-6">
+    <a th:href="@{'http://127.0.0.1:8083/courses/new}"
+       class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+      Создать курс
+    </a>
+  </div>
+
+  <!-- Список курсов -->
+  <div th:each="course : ${courses}" class="mb-4 p-4 bg-gray-100 rounded-lg">
+    <h2 class="text-2xl font-semibold mb-2">
+      <!-- Раньше было ...?token=${...} – теперь просто ссылка -->
+      <a th:href="@{'http://127.0.0.1:8083/courses/' + ${course.id}}"
+         th:text="${course.courseName}"
+         class="text-blue-700 hover:underline">
       </a>
-    </div>
+    </h2>
+    <p th:text="${course.description}" class="text-gray-700"></p>
   </div>
 </div>
 </body>
