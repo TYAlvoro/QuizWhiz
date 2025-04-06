@@ -26,14 +26,10 @@ class JwtAuthenticationFilter(
                 val username = jwtTokenProvider.getUsernameFromJWT(token)
                 if (username != null && SecurityContextHolder.getContext().authentication == null) {
                     val auth = UsernamePasswordAuthenticationToken(
-                        username,
-                        null,
-                        listOf(SimpleGrantedAuthority("ROLE_USER"))
+                        username, null, listOf(SimpleGrantedAuthority("ROLE_USER"))
                     )
                     SecurityContextHolder.getContext().authentication = auth
                     logger.debug("Authenticated user: $username")
-                } else {
-                    logger.debug("Username is null or authentication already exists")
                 }
             } catch (ex: Exception) {
                 logger.error("Error validating token", ex)
@@ -48,11 +44,8 @@ class JwtAuthenticationFilter(
         if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7)
         }
-        val cookies = request.cookies
-        if (cookies != null) {
-            cookies.forEach {
-                if (it.name == "JWT") return it.value
-            }
+        request.cookies?.forEach {
+            if (it.name == "JWT") return it.value
         }
         return null
     }

@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" as="style" onload="this.rel='stylesheet'">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
-<body class="bg-gray-100" style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;">
+<body class="bg-gray-100" style="font-family:'Plus Jakarta Sans','Noto Sans',sans-serif;">
 <div class="container mx-auto p-6 min-h-screen">
   <h1 class="text-3xl font-bold mb-6 text-center">Мои курсы</h1>
   <p class="mb-6 text-center">
@@ -19,7 +19,6 @@
       Создать курс
     </a>
   </div>
-  <!-- Список курсов -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div th:each="course : ${courses}" class="bg-white p-4 rounded shadow">
       <h2 class="text-xl font-bold mb-2">

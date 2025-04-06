@@ -16,14 +16,13 @@
     }
   </script>
 </head>
-<body class="bg-gray-100" style="font-family: 'Plus Jakarta Sans','Noto Sans',sans-serif;">
+<body class="bg-gray-100" style="font-family:'Plus Jakarta Sans','Noto Sans',sans-serif;">
 <div class="container mx-auto p-6 min-h-screen flex items-center justify-center">
-  <div class="bg-white rounded shadow p-8 w-full max-w-md">
+  <div class="bg-white shadow rounded-lg p-8 w-full max-w-md">
     <h1 class="text-2xl font-bold mb-6 text-center">Редактирование квиза</h1>
     <form th:action="@{/quizzes/update}" method="post" class="space-y-4">
       <input type="hidden" name="id" th:value="${quiz.id}" />
       <input type="hidden" name="courseId" th:value="${quiz.courseId}" />
-
       <div>
         <label class="block font-semibold mb-1">Название квиза:</label>
         <input type="text" name="title" th:value="${quiz.title}" required
@@ -47,8 +46,6 @@
         <input type="checkbox" name="isOpen" th:checked="${quiz.isOpen}" id="isOpen" class="mr-2"/>
         <label for="isOpen" class="font-semibold">Открыт для прохождения</label>
       </div>
-
-      <!-- Публичная ссылка, если isOpen = true -->
       <div th:if="${quiz.isOpen}" class="mt-4">
         <label class="block font-semibold mb-1">Публичная ссылка для прохождения:</label>
         <input type="text" id="publicLink" th:value="${quiz.publicLink}" readonly
@@ -58,7 +55,6 @@
           Скопировать ссылку
         </button>
       </div>
-
       <button type="submit"
               class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
         Сохранить изменения

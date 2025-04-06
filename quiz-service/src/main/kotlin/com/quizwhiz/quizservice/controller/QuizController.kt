@@ -47,10 +47,7 @@ class QuizController(
     }
 
     @PostMapping("/quizzes")
-    fun createQuiz(
-        @ModelAttribute quizDto: QuizDto,
-        request: HttpServletRequest
-    ): String {
+    fun createQuiz(@ModelAttribute quizDto: QuizDto, request: HttpServletRequest): String {
         val token = extractToken(request) ?: ""
         val creatorUsername = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
         var savedQuiz = quizRepository.save(
@@ -85,14 +82,11 @@ class QuizController(
         val quiz = quizRepository.findById(quizId).orElseThrow { RuntimeException("Quiz not found") }
         model.addAttribute("quiz", quiz)
         model.addAttribute("token", token)
-        return if (quiz.creatorUsername == currentUsername) "editquiz" else "takequiz"
+        return if (quiz.creatorUsername == currentUsername) "editQuiz" else "takeQuiz"
     }
 
     @PostMapping("/quizzes/update")
-    fun updateQuiz(
-        @ModelAttribute quizDto: QuizDto,
-        request: HttpServletRequest
-    ): String {
+    fun updateQuiz(@ModelAttribute quizDto: QuizDto, request: HttpServletRequest): String {
         val token = extractToken(request) ?: ""
         val currentUsername = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
         val existingQuiz = quizRepository.findById(quizDto.id)
@@ -121,11 +115,8 @@ class QuizController(
         if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7)
         }
-        val cookies = request.cookies
-        if (cookies != null) {
-            cookies.forEach {
-                if (it.name == "JWT") return it.value
-            }
+        request.cookies?.forEach {
+            if (it.name == "JWT") return it.value
         }
         return null
     }

@@ -14,11 +14,7 @@ class JwtTokenProvider(
 ) {
     fun getUsernameFromJWT(token: String): String? {
         val key = Keys.hmacShaKeyFor(jwtSecret.toByteArray())
-        val claims = Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .body
+        val claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).body
         return claims["username"] as? String
     }
 }

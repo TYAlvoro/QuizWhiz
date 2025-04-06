@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable
 
 @FeignClient(name = "quiz-service", url = "http://\${quizservice.url}")
 interface QuizServiceClient {
-
-    // Предположим, что в quiz-service есть эндпоинт GET /internal/courses/by-teacher/{teacherId}
     @GetMapping("/internal/courses/by-teacher/{teacherId}")
     fun getCoursesByTeacherId(@PathVariable teacherId: Long): List<CourseDto>
 }

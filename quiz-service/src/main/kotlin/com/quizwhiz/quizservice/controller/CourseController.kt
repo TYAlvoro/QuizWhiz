@@ -28,14 +28,11 @@ class CourseController(
         val teacherId = token?.let { jwtTokenProvider.getUserIdFromJWT(it) } ?: 0L
         val courseDto = CourseDto(id = 0, courseName = "", description = null, teacherId = teacherId)
         model.addAttribute("courseDto", courseDto)
-        return "newcourse"
+        return "newCourse"
     }
 
     @PostMapping("/courses")
-    fun createCourse(
-        @ModelAttribute courseDto: CourseDto,
-        request: HttpServletRequest
-    ): String {
+    fun createCourse(@ModelAttribute courseDto: CourseDto, request: HttpServletRequest): String {
         val token = extractToken(request) ?: ""
         val teacherUsername = jwtTokenProvider.getUsernameFromJWT(token) ?: ""
         val savedCourse = courseRepository.save(
@@ -45,12 +42,7 @@ class CourseController(
                 teacherId = courseDto.teacherId
             )
         )
-        userCourseRepository.save(
-            UserCourseEntity(
-                userId = courseDto.teacherId,
-                courseId = savedCourse.id
-            )
-        )
+        userCourseRepository.save(UserCourseEntity(userId = courseDto.teacherId, courseId = savedCourse.id))
         return "redirect:http://127.0.0.1:8082/profile/$teacherUsername/courses"
     }
 
@@ -59,11 +51,8 @@ class CourseController(
         if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7)
         }
-        val cookies = request.cookies
-        if (cookies != null) {
-            cookies.forEach {
-                if (it.name == "JWT") return it.value
-            }
+        request.cookies?.forEach {
+            if (it.name == "JWT") return it.value
         }
         return null
     }

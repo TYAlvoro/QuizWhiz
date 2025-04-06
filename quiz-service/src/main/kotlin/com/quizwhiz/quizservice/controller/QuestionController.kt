@@ -29,16 +29,12 @@ class QuestionController(
         model: Model
     ): String {
         val token = extractToken(request) ?: throw RuntimeException("Token is missing")
-        val username = jwtTokenProvider.getUsernameFromJWT(token)
-            ?: throw RuntimeException("Invalid token")
-        val createQuestionDto = CreateQuestionDto(
-            options = mutableListOf("", "", "")
-        )
+        val username = jwtTokenProvider.getUsernameFromJWT(token) ?: throw RuntimeException("Invalid token")
+        val createQuestionDto = CreateQuestionDto(options = mutableListOf("", "", ""))
         model.addAttribute("createQuestionDto", createQuestionDto)
         model.addAttribute("quizId", quizId)
-        // Если шаблон ожидает token – можно добавить, хотя он уже хранится в cookie
         model.addAttribute("token", token)
-        return "newquestion"
+        return "newQuestion"
     }
 
     @PostMapping("/quizzes/{quizId}/questions")
@@ -50,16 +46,12 @@ class QuestionController(
         val token = extractToken(request) ?: ""
         val username = jwtTokenProvider.getUsernameFromJWT(token)
             ?: throw RuntimeException("Invalid token")
-
-        if (createQuestionDto.options.size < 3) {
+        if (createQuestionDto.options.size < 3)
             throw RuntimeException("Нужно указать как минимум 3 варианта ответа")
-        }
         val correctIndex = createQuestionDto.correctOptionIndex
             ?: throw RuntimeException("Не выбран правильный ответ")
-        if (correctIndex !in 0 until createQuestionDto.options.size) {
+        if (correctIndex !in 0 until createQuestionDto.options.size)
             throw RuntimeException("Неверный индекс правильного ответа")
-        }
-
         val newQuestion = QuestionDocument(
             text = createQuestionDto.text,
             options = createQuestionDto.options,
@@ -78,11 +70,8 @@ class QuestionController(
         if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7)
         }
-        val cookies = request.cookies
-        if (cookies != null) {
-            cookies.forEach {
-                if (it.name == "JWT") return it.value
-            }
+        request.cookies?.forEach {
+            if (it.name == "JWT") return it.value
         }
         return null
     }

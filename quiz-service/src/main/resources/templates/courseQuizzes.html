@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" as="style" onload="this.rel='stylesheet'">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
-<body class="bg-gray-100" style="font-family: 'Plus Jakarta Sans','Noto Sans',sans-serif;">
+<body class="bg-gray-100" style="font-family:'Plus Jakarta Sans','Noto Sans',sans-serif;">
 <div class="container mx-auto p-6 min-h-screen">
   <div class="bg-white shadow rounded-lg p-6">
     <h1 class="text-3xl font-bold mb-4" th:text="${course.courseName}">Название курса</h1>
@@ -15,8 +15,6 @@
       <span class="font-medium">Описание:</span>
       <span th:text="${course.description}">Описание курса</span>
     </p>
-
-    <!-- Список квизов -->
     <h2 class="text-2xl font-semibold mb-4">Список квизов</h2>
     <ul class="space-y-4">
       <li th:each="quiz : ${quizzes}" class="p-4 bg-gray-50 rounded-lg shadow">
@@ -25,8 +23,6 @@
            th:text="${quiz.title}">Название квиза</a>
       </li>
     </ul>
-
-    <!-- Кнопка создания нового квиза -->
     <div class="mt-6">
       <a th:href="@{|/quizzes/new?courseId=${course.id}|}"
          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">

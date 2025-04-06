@@ -13,13 +13,9 @@ class ProfileController(private val profileService: ProfileService) {
     @GetMapping("/profile/{username}")
     fun viewProfile(@PathVariable username: String, model: Model): String {
         val auth = SecurityContextHolder.getContext().authentication
-        // Если пользователь не аутентифицирован или имена не совпадают — перенаправляем
-        if (auth == null || auth.name != username) {
-            // Можно либо перенаправить на страницу логина, либо на профиль текущего пользователя
-            return "redirect:/login"
-        }
+        if (auth == null || auth.name != username) return "redirect:/login"
         val profile: ProfileDto = profileService.getProfile(username)
         model.addAttribute("profile", profile)
-        return "profile" // Отображение шаблона profile.html
+        return "profile"
     }
 }

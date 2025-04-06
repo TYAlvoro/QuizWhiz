@@ -16,7 +16,7 @@ class RegistrationController(private val authService: AuthService) {
     @GetMapping("/register")
     fun showRegistrationForm(model: Model): String {
         model.addAttribute("registrationRequest", RegistrationRequest("", "", "USER", ""))
-        return "register"  // шаблон register.html
+        return "register"
     }
 
     @PostMapping("/register")
@@ -25,16 +25,13 @@ class RegistrationController(private val authService: AuthService) {
         bindingResult: BindingResult,
         model: Model
     ): String {
-        if (bindingResult.hasErrors()) {
-            return "register"
-        }
+        if (bindingResult.hasErrors()) return "register"
         try {
             authService.register(registrationRequest)
         } catch (e: Exception) {
             model.addAttribute("error", e.message)
             return "register"
         }
-        // Редирект после успешной регистрации на страницу профиля Profile Service
         return "redirect:http://127.0.0.1:8082/profile/${registrationRequest.username}"
     }
 }

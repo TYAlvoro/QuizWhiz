@@ -1,4 +1,3 @@
-// File: src/main/kotlin/com/quizwhiz/quizservice/controller/CourseQuizzesController.kt
 package com.quizwhiz.quizservice.controller
 
 import com.quizwhiz.quizservice.model.CourseEntity
@@ -24,23 +23,15 @@ class CourseQuizzesController(
         request: HttpServletRequest,
         model: Model
     ): String {
-        // Извлекаем JWT из заголовка или cookie
         val token = extractToken(request)
         val username = token?.let { jwtTokenProvider.getUsernameFromJWT(it) }
             ?: throw RuntimeException("Invalid token")
-
-        // Получаем курс по ID (если курс не найден, выбрасываем исключение)
         val course: CourseEntity = courseRepository.findById(courseId)
             .orElseThrow { RuntimeException("Course not found") }
-
-        // Добавляем в модель необходимые атрибуты
         model.addAttribute("username", username)
         model.addAttribute("course", course)
-
-        // Получаем квизы для данного курса (предполагается, что идентификатор курса хранится как строка)
         val quizzes = quizRepository.findAllByCourseId(courseId.toString())
         model.addAttribute("quizzes", quizzes)
-
         return "courseQuizzes"
     }
 

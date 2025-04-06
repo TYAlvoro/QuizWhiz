@@ -4,7 +4,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.Date
 
 @Component
 class JwtTokenProvider(
@@ -19,7 +19,7 @@ class JwtTokenProvider(
         val expiryDate = Date(now.time + jwtExpirationInMs)
         val key = Keys.hmacShaKeyFor(jwtSecret.toByteArray())
         return Jwts.builder()
-            .setSubject(userId.toString())  // subject содержит ID пользователя
+            .setSubject(userId.toString())
             .claim("username", username)
             .setIssuedAt(now)
             .setExpiration(expiryDate)
@@ -27,25 +27,15 @@ class JwtTokenProvider(
             .compact()
     }
 
-    // Новый метод для извлечения userId (teacherId) из токена
     fun getUserIdFromJWT(token: String): Long {
         val key = Keys.hmacShaKeyFor(jwtSecret.toByteArray())
-        val claims = Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .body
+        val claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).body
         return claims.subject.toLong()
     }
 
-    // Если вам также нужен username:
     fun getUsernameFromJWT(token: String): String? {
         val key = Keys.hmacShaKeyFor(jwtSecret.toByteArray())
-        val claims = Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .body
+        val claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).body
         return claims["username"] as? String
     }
 }

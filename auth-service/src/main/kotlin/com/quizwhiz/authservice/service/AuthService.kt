@@ -12,6 +12,7 @@ class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder
 ) {
+
     @Transactional
     fun register(request: RegistrationRequest) {
         if (userRepository.existsByUsername(request.username)) {

@@ -1,6 +1,6 @@
 package com.quizwhiz.quizservice.dto
 
-import java.util.*
+import java.util.Date
 
 data class QuizDto(
     val id: String = "",

@@ -21,12 +21,10 @@ class ProfileSecurityConfig(
                 auth.requestMatchers("/profile/**").authenticated()
                     .anyRequest().permitAll()
             }
-            // Добавляем свой фильтр с локальным JwtTokenProvider
             .addFilterBefore(
                 JwtAuthenticationFilter(jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter::class.java
             )
-
         return http.build()
     }
 }

@@ -1,7 +1,7 @@
 package com.quizwhiz.quizservice.controller
 
-import com.quizwhiz.quizservice.repository.CourseRepository
 import com.quizwhiz.quizservice.dto.CourseDto
+import com.quizwhiz.quizservice.repository.CourseRepository
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping

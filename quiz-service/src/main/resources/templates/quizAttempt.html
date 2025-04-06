@@ -11,7 +11,7 @@
 <div class="container mx-auto p-6 min-h-screen">
   <div class="bg-white shadow rounded-lg p-6">
     <h1 class="text-3xl font-bold mb-4" th:text="${quiz.title}">Название квиза</h1>
-    <p class="mb-6" th:text="${quiz.description}">Описание квиза</p>
+    <p class="mb-6 text-gray-700" th:text="${quiz.description}">Описание квиза</p>
     <p class="mb-4">Никнейм: <span class="font-semibold" th:text="${nickname}"></span></p>
     <form th:action="@{'/quizzes/' + ${quiz.id} + '/attempt'}" method="post" class="space-y-4">
       <input type="hidden" name="nickname" th:value="${nickname}" />

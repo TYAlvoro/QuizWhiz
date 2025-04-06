@@ -10,7 +10,7 @@
     .hidden { display: none; }
   </style>
 </head>
-<body class="bg-gray-100" style="font-family: 'Plus Jakarta Sans','Noto Sans',sans-serif;">
+<body class="bg-gray-100" style="font-family:'Plus Jakarta Sans','Noto Sans',sans-serif;">
 <div class="container mx-auto p-6 min-h-screen flex items-center justify-center">
   <div class="bg-white shadow rounded-lg p-8 w-full max-w-md">
     <h1 class="text-2xl font-bold mb-6 text-center">Создание нового вопроса</h1>
@@ -68,11 +68,9 @@
     </form>
   </div>
 </div>
-
 <script>
   const addOptionBtn = document.getElementById("add-option-btn");
-  let currentOptions = 3; // уже видны 3 варианта
-
+  let currentOptions = 3;
   addOptionBtn.addEventListener("click", function () {
     if (currentOptions < 5) {
       const optionDiv = document.getElementById("option-" + currentOptions);

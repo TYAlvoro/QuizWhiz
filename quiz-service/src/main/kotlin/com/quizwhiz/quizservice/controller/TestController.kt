@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
-import java.util.*
+import java.util.Date
 
 @Controller
 class TestController(
@@ -25,8 +25,6 @@ class TestController(
 
     private val log = LoggerFactory.getLogger(TestController::class.java)
 
-    // Страница прохождения квиза с вопросами.
-    // Доступ разрешён всем.
     @PermitAll
     @GetMapping("/quizzes/{quizId}/attempt")
     fun showQuizAttemptPage(
@@ -43,7 +41,6 @@ class TestController(
         return "quizAttempt"
     }
 
-    // Обработка отправки результатов прохождения квиза.
     @PostMapping("/quizzes/{quizId}/attempt")
     fun submitQuizAttempt(
         @PathVariable quizId: String,
@@ -60,12 +57,10 @@ class TestController(
                     ?: throw RuntimeException("Invalid answer for question $questionId")
                 answers.add(AnswerDto(questionId, selectedIndex))
             }
-
         val quiz = quizRepository.findById(quizId)
             .orElseThrow { RuntimeException("Quiz not found") }
         val questions: Map<String, QuestionDocument> = questionRepository.findAllByIdIn(quiz.questionIds)
             .associateBy { it.id!! }
-
         var correctCount = 0
         val answerRecords = answers.map { answerDto ->
             val question = questions[answerDto.questionId]
@@ -78,7 +73,6 @@ class TestController(
                 correct = isCorrect
             )
         }
-
         val attempt = QuizAttemptDocument(
             quizId = quizId,
             nickname = nickname,

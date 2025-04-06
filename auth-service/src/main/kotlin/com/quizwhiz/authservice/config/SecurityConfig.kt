@@ -17,6 +17,7 @@ class SecurityConfig(
     private val customUserDetailsService: CustomUserDetailsService,
     private val customAuthenticationSuccessHandler: CustomAuthenticationSuccessHandler
 ) {
+
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
@@ -28,9 +29,7 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
             .authorizeHttpRequests { auth ->
-                // Разрешаем публичный доступ ко всем URL, начинающимся с /internal/users/
                 auth.requestMatchers("/internal/users/**").permitAll()
-                    // Также разрешаем доступ к страницам логина и регистрации
                     .requestMatchers("/login", "/register", "/register/**").permitAll()
                     .anyRequest().authenticated()
             }
