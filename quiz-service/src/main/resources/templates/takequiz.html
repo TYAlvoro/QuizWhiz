@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <title th:text="${quiz.title}">Прохождение квиза</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" as="style" onload="this.rel='stylesheet'">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
-<body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
-<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-  <h1 class="text-2xl font-bold mb-6" th:text="${quiz.title}">Название квиза</h1>
-  <p class="mb-4" th:text="${quiz.description}">Описание квиза</p>
-  <p class="mb-4">Ваш никнейм: <span th:text="${nickname}"></span></p>
-  <!-- Ссылка, ведущая к прохождению квиза -->
-  <div class="mt-6">
-    <a th:href="@{'/quizzes/' + ${quiz.id} + '/attempt?nickname=' + ${nickname}}"
-       class="w-full block px-4 py-2 bg-green-600 text-white text-center rounded hover:bg-green-700">
-      Начать тест
-    </a>
+<body class="bg-gray-100" style="font-family:'Plus Jakarta Sans','Noto Sans',sans-serif;">
+<div class="container mx-auto p-6 min-h-screen flex items-center justify-center">
+  <div class="bg-white shadow rounded-lg p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6" th:text="${quiz.title}">Название квиза</h1>
+    <p class="mb-4 text-gray-700" th:text="${quiz.description}">Описание квиза</p>
+    <p class="mb-4">Ваш никнейм: <span class="font-semibold" th:text="${nickname}"></span></p>
+    <div class="text-center mt-6">
+      <a th:href="@{'/quizzes/' + ${quiz.id} + '/attempt?nickname=' + ${nickname}}"
+         class="inline-block px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold">
+        Начать тест
+      </a>
+    </div>
   </div>
 </div>
 </body>

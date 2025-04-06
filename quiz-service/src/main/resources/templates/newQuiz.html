@@ -1,72 +1,67 @@
-<!-- File: src/main/resources/templates/newquiz.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <title>Создание квиза</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" as="style" onload="this.rel='stylesheet'">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
-<body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
-<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-    <h1 class="text-2xl font-bold mb-6">Создание нового квиза</h1>
-    <form th:action="@{/quizzes}" method="post" class="space-y-4">
-        <!-- Скрытое поле token удалено -->
-        <input type="hidden" name="courseId" th:value="${quizDto.courseId}" />
-
-        <div>
-            <label class="block text-gray-700 font-medium mb-1">Название квиза:</label>
-            <input type="text" name="title" th:value="${quizDto.title}" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none"/>
-        </div>
-
-        <div>
-            <label class="block text-gray-700 font-medium mb-1">Описание:</label>
-            <textarea name="description"
-                      class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none"
-                      th:text="${quizDto.description}"></textarea>
-        </div>
-
-        <div>
-            <label class="block text-gray-700 font-medium mb-1">Тип ответа:</label>
-            <select name="answerType" class="w-full px-3 py-2 border border-gray-300 rounded">
-                <option value="multiple-choice" th:selected="${quizDto.answerType == 'multiple-choice'}">
-                    Выбор ответа
-                </option>
-                <option value="drag-and-drop" th:selected="${quizDto.answerType == 'drag-and-drop'}">
-                    Перетаскивание
-                </option>
-            </select>
-        </div>
-
-        <div class="flex items-center">
-            <input type="checkbox" name="isOpen" th:checked="${quizDto.isOpen}" id="isOpen" class="mr-2"/>
-            <label for="isOpen" class="text-gray-700 font-medium">Открыт для прохождения</label>
-        </div>
-
-        <div class="mt-4">
-            <h2 class="text-xl font-bold mb-2">Выберите вопросы для квиза</h2>
-            <div th:if="${questions != null}">
-                <div th:each="q : ${questions}">
-                    <label class="block">
-                        <input type="checkbox" name="questionIds" th:value="${q.id}" class="mr-2"/>
+<body class="bg-gray-100" style="font-family: 'Plus Jakarta Sans','Noto Sans',sans-serif;">
+<div class="container mx-auto p-6 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow rounded-lg p-8 w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">Создание нового квиза</h1>
+        <form th:action="@{/quizzes}" method="post" class="space-y-4">
+            <input type="hidden" name="courseId" th:value="${quizDto.courseId}" />
+            <div>
+                <label class="block font-semibold mb-1">Название квиза:</label>
+                <input type="text" name="title" th:value="${quizDto.title}" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            </div>
+            <div>
+                <label class="block font-semibold mb-1">Описание:</label>
+                <textarea name="description"
+                          class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          th:text="${quizDto.description}"></textarea>
+            </div>
+            <div>
+                <label class="block font-semibold mb-1">Тип ответа:</label>
+                <select name="answerType"
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="multiple-choice" th:selected="${quizDto.answerType == 'multiple-choice'}">
+                        Выбор ответа
+                    </option>
+                    <option value="drag-and-drop" th:selected="${quizDto.answerType == 'drag-and-drop'}">
+                        Перетаскивание
+                    </option>
+                </select>
+            </div>
+            <div class="flex items-center">
+                <input type="checkbox" name="isOpen" th:checked="${quizDto.isOpen}" id="isOpen" class="mr-2" />
+                <label for="isOpen" class="font-semibold">Открыт для прохождения</label>
+            </div>
+            <!-- Секция выбора вопросов -->
+            <div class="mt-4">
+                <h2 class="text-xl font-bold mb-2">Выберите вопросы для квиза</h2>
+                <div th:if="${questions != null}">
+                    <div th:each="q : ${questions}" class="flex items-center mb-2">
+                        <input type="checkbox" name="questionIds" th:value="${q.id}" class="mr-2" />
                         <span th:text="${q.text}">Текст вопроса</span>
-                    </label>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <a th:href="@{'/quizzes/' + ${quizDto.courseId} + '/questions/new'}"
+                       class="text-blue-600 hover:underline">
+                        Создать новый вопрос
+                    </a>
                 </div>
             </div>
-            <!-- Ссылка на создание нового вопроса без token-параметра -->
-            <div class="mt-2">
-                <a th:href="@{'/quizzes/' + ${quizDto.courseId} + '/questions/new'}"
-                   class="text-blue-600 hover:underline">
-                    Создать новый вопрос
-                </a>
-            </div>
-        </div>
-
-        <button type="submit"
-                class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            Создать квиз
-        </button>
-    </form>
+            <button type="submit"
+                    class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
+                Создать квиз
+            </button>
+        </form>
+    </div>
 </div>
 </body>
 </html>

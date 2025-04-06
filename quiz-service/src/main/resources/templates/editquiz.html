@@ -1,13 +1,14 @@
-<!-- File: src/main/resources/templates/editquiz.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <title>Редактирование квиза</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" as="style" onload="this.rel='stylesheet'">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script>
     function copyLink() {
-      var copyText = document.getElementById("publicLink");
+      const copyText = document.getElementById("publicLink");
       copyText.select();
       copyText.setSelectionRange(0, 99999);
       document.execCommand("copy");
@@ -15,58 +16,55 @@
     }
   </script>
 </head>
-<body class="bg-gradient-to-r from-blue-400 to-blue-600 min-h-screen flex items-center justify-center">
-<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-  <h1 class="text-2xl font-bold mb-6">Редактирование квиза</h1>
-  <form th:action="@{/quizzes/update}" method="post" class="space-y-4">
-    <!-- Скрытые поля -->
-    <!-- (token удалён) -->
-    <input type="hidden" name="id" th:value="${quiz.id}" />
-    <input type="hidden" name="courseId" th:value="${quiz.courseId}" />
+<body class="bg-gray-100" style="font-family: 'Plus Jakarta Sans','Noto Sans',sans-serif;">
+<div class="container mx-auto p-6 min-h-screen flex items-center justify-center">
+  <div class="bg-white rounded shadow p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center">Редактирование квиза</h1>
+    <form th:action="@{/quizzes/update}" method="post" class="space-y-4">
+      <input type="hidden" name="id" th:value="${quiz.id}" />
+      <input type="hidden" name="courseId" th:value="${quiz.courseId}" />
 
-    <div>
-      <label class="block text-gray-700 font-medium mb-1">Название квиза:</label>
-      <input type="text" name="title" th:value="${quiz.title}" required
-             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-    </div>
+      <div>
+        <label class="block font-semibold mb-1">Название квиза:</label>
+        <input type="text" name="title" th:value="${quiz.title}" required
+               class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Описание:</label>
+        <textarea name="description"
+                  class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  th:text="${quiz.description}"></textarea>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Тип ответа:</label>
+        <select name="answerType"
+                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="multiple-choice" th:selected="${quiz.answerType == 'multiple-choice'}">Выбор ответа</option>
+          <option value="drag-and-drop" th:selected="${quiz.answerType == 'drag-and-drop'}">Перетаскивание</option>
+        </select>
+      </div>
+      <div class="flex items-center">
+        <input type="checkbox" name="isOpen" th:checked="${quiz.isOpen}" id="isOpen" class="mr-2"/>
+        <label for="isOpen" class="font-semibold">Открыт для прохождения</label>
+      </div>
 
-    <div>
-      <label class="block text-gray-700 font-medium mb-1">Описание:</label>
-      <textarea name="description"
-                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                th:text="${quiz.description}"></textarea>
-    </div>
+      <!-- Публичная ссылка, если isOpen = true -->
+      <div th:if="${quiz.isOpen}" class="mt-4">
+        <label class="block font-semibold mb-1">Публичная ссылка для прохождения:</label>
+        <input type="text" id="publicLink" th:value="${quiz.publicLink}" readonly
+               class="w-full px-3 py-2 border border-gray-300 rounded"/>
+        <button type="button" onclick="copyLink()"
+                class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Скопировать ссылку
+        </button>
+      </div>
 
-    <div>
-      <label class="block text-gray-700 font-medium mb-1">Тип ответа:</label>
-      <select name="answerType"
-              class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <option value="multiple-choice" th:selected="${quiz.answerType == 'multiple-choice'}">Выбор ответа</option>
-        <option value="drag-and-drop" th:selected="${quiz.answerType == 'drag-and-drop'}">Перетаскивание</option>
-      </select>
-    </div>
-
-    <div class="flex items-center">
-      <input type="checkbox" name="isOpen" th:checked="${quiz.isOpen}" id="isOpen" class="mr-2"/>
-      <label for="isOpen" class="text-gray-700 font-medium">Открыт для прохождения</label>
-    </div>
-
-    <!-- Публичная ссылка, если isOpen = true -->
-    <div th:if="${quiz.isOpen}" class="mt-4">
-      <label class="block text-gray-700 font-medium mb-1">Публичная ссылка для прохождения:</label>
-      <input type="text" id="publicLink" th:value="${quiz.publicLink}" readonly
-             class="w-full px-3 py-2 border border-gray-300 rounded"/>
-      <button type="button" onclick="copyLink()"
-              class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-        Скопировать ссылку
+      <button type="submit"
+              class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
+        Сохранить изменения
       </button>
-    </div>
-
-    <button type="submit"
-            class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-      Сохранить изменения
-    </button>
-  </form>
+    </form>
+  </div>
 </div>
 </body>
 </html>
