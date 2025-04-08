@@ -74,7 +74,6 @@
 </div>
 <script>
   const addOptionBtn = document.getElementById("add-option-btn");
-  // Три обязательных варианта всегда видны; переменная для количества видимых вариантов
   let currentOptions = 3;
 
   addOptionBtn.addEventListener("click", function () {
@@ -94,23 +93,19 @@
   function deleteOption(optionIndex) {
     const optionDiv = document.getElementById("option-" + optionIndex);
     if (optionDiv) {
-      // Очистить текстовое поле внутри варианта
       const inputField = optionDiv.querySelector('input[type="text"]');
       if (inputField) {
         inputField.value = "";
       }
-      // Если вариант выбран как правильный ответ, сбросить выбор
       const radioField = optionDiv.querySelector('input[type="radio"]');
       if (radioField && radioField.checked) {
         radioField.checked = false;
       }
       optionDiv.classList.add("hidden");
-      // Если ранее было показано максимум вариантов, возвращаем возможность добавить вариант
       if (currentOptions === 5) {
         addOptionBtn.disabled = false;
         addOptionBtn.textContent = "Добавить вариант ответа";
       }
-      // Уменьшаем счетчик видимых вариантов, если удаляется вариант с самым высоким индексом
       if (optionIndex === currentOptions - 1) {
         currentOptions--;
       }
