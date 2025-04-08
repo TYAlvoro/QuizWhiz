@@ -15,25 +15,15 @@ class QuizAttemptInternalController(
     private val quizAttemptRepository: QuizAttemptRepository,
     private val quizRepository: QuizRepository
 ) {
-
-    /**
-     * Возвращаем последние N (например, 5) попыток прохождения квизов для указанного nickname,
-     * отсортированные по дате убыванием (последние сначала).
-     */
     @GetMapping("/recent/{nickname}")
     fun getRecentQuizAttempts(@PathVariable nickname: String): List<RecentQuizAttemptDto> {
-        // Вариант: завести в QuizAttemptRepository метод вроде:
-        // fun findTop5ByNicknameOrderByAttemptedAtDesc(nickname: String): List<QuizAttemptDocument>
-        // Либо просто findAllByNickname(...) и сами сортируем. Ниже — упрощённо.
 
-        // Допустим, хотим 5 последних:
         val allAttempts: List<QuizAttemptDocument> =
-            quizAttemptRepository.findAll() // или findAllByNickname(nickname)
+            quizAttemptRepository.findAll()
                 .filter { it.nickname == nickname }
                 .sortedByDescending { it.attemptedAt }
                 .take(5)
 
-        // Для вывода названия квиза можно подгрузить QuizDocument:
         return allAttempts.map { attempt ->
             val quizDoc = quizRepository.findById(attempt.quizId).orElse(null)
             val quizTitle = quizDoc?.title ?: "(no title)"
