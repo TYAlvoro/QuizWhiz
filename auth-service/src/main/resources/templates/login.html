@@ -3,41 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <title>Вход в систему</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap"
         as="style" onload="this.rel='stylesheet'">
-  <link rel="icon" href="data:image/x-icon;base64," type="image/x-icon" />
+  <link rel="icon" href="data:image/x-icon;base64," type="image/x-icon">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 </head>
 <body class="bg-gray-100" style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;">
 <div class="container mx-auto p-6 min-h-screen flex items-center justify-center">
   <div class="bg-white shadow rounded-lg p-8 w-full max-w-md">
     <h1 class="text-2xl font-bold mb-6 text-center">Вход в систему</h1>
+
+    <!-- Форма авторизации -->
     <form th:action="@{/login}" method="post" class="space-y-4">
-      <!-- Скрытое поле для передачи redirectUrl -->
-      <input type="hidden" name="redirectUrl" th:value="${param.redirectUrl}" />
+      <!-- Скрытое поле для redirectUrl (если нужно перенаправление после логина) -->
+      <input type="hidden" name="redirectUrl" th:value="${param.redirectUrl}">
+
+      <!-- Имя пользователя -->
       <div>
         <label for="username" class="block font-semibold mb-1">Имя пользователя</label>
-        <input type="text" id="username" name="username" placeholder="Введите имя пользователя" required
-               class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Введите имя пользователя"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
       </div>
+
+      <!-- Пароль + кнопка Показать/Скрыть -->
       <div>
         <label for="password" class="block font-semibold mb-1">Пароль</label>
-        <input type="password" id="password" name="password" placeholder="Введите пароль" required
-               class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <div class="relative">
+          <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Введите пароль"
+                  required
+                  class="w-full px-3 py-2 pr-12 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+          <button
+                  type="button"
+                  class="absolute inset-y-0 right-0 flex items-center px-3 text-sm text-gray-600 hover:text-gray-800"
+                  onclick="togglePasswordVisibility('password', this)"
+          >
+            Показать
+          </button>
+        </div>
       </div>
-      <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
+
+      <!-- Кнопка "Войти" -->
+      <button
+              type="submit"
+              class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold transition-colors"
+      >
         Войти
       </button>
     </form>
+
+    <!-- Ссылка на страницу регистрации -->
     <div class="mt-4 text-center">
-      <!-- Передаем redirectUrl в ссылке на регистрацию -->
-      <a th:href="@{/register(redirectUrl=${param.redirectUrl})}" class="text-blue-600 hover:underline">
+      <a
+              th:href="@{/register(redirectUrl=${param.redirectUrl})}"
+              class="text-blue-600 hover:underline"
+      >
         Нет аккаунта? Зарегистрируйтесь
       </a>
     </div>
   </div>
 </div>
+
+<!-- JS-скрипт для показа/скрытия пароля -->
+<script>
+  function togglePasswordVisibility(fieldId, button) {
+    const passwordField = document.getElementById(fieldId);
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      button.textContent = "Скрыть";
+    } else {
+      passwordField.type = "password";
+      button.textContent = "Показать";
+    }
+  }
+</script>
+
 </body>
 </html>
