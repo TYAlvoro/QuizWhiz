@@ -24,7 +24,7 @@
         </a>
       </div>
     </div>
-    <!-- Правая колонка: статистика и кнопки -->
+    <!-- Правая колонка: статистика, курсы и достижения -->
     <div class="w-full md:w-2/3 flex flex-col gap-6">
       <!-- Кнопка "Мои курсы" -->
       <div class="text-center">
@@ -47,6 +47,31 @@
           </div>
         </div>
       </div>
+
+      <!-- Достижения -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Достижения</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div th:each="achieve : ${achievements}" class="bg-yellow-50 p-4 rounded shadow">
+            <h4 class="font-bold text-yellow-700" th:text="${achieve.achievementName}">Название ачивки</h4>
+            <p class="text-yellow-600" th:text="${achieve.description}">Описание ачивки</p>
+            <p class="text-gray-500 text-sm" th:text="${#dates.format(achieve.awardedAt, 'dd.MM.yyyy HH:mm')}">Дата</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Последние квизы (если нужно) -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Последние попытки квизов</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div th:each="quizAttempt : ${recentQuizzes}" class="bg-gray-50 p-4 rounded shadow">
+            <h4 class="font-bold text-blue-700" th:text="${quizAttempt.quizTitle}">Название квиза</h4>
+            <p class="text-gray-600">Результат: <span th:text="${quizAttempt.score}">0</span> из <span th:text="${quizAttempt.totalQuestions}">0</span></p>
+            <p class="text-gray-500 text-sm" th:text="${#dates.format(quizAttempt.attemptedAt, 'dd.MM.yyyy HH:mm')}">Дата</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
