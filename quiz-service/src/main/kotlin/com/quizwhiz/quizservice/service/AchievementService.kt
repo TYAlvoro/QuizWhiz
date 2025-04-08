@@ -17,7 +17,7 @@ class AchievementService(
             awardAchievement(nickname, "Первый опыт", "Вы сделали свою первую попытку квиза!")
         }
         if (score == totalQuestions) {
-            if (achievementRepository.findByNicknameAndAchievementName(nickname, "Идеальный результат") == null) {
+            if (achievementRepository.findByNickname(nickname) == null) {
                 awardAchievement(nickname, "Идеальный результат", "Вы набрали 100% баллов на квизе!")
             }
         }
@@ -25,14 +25,14 @@ class AchievementService(
             it.totalQuestions > 0 && (it.score.toDouble() / it.totalQuestions.toDouble()) >= 0.8
         }
         if (highScoreAttempts.size >= 10) {
-            if (achievementRepository.findByNicknameAndAchievementName(nickname, "Мастер квизов") == null) {
+            if (achievementRepository.findByNickname(nickname) == null) {
                 awardAchievement(nickname, "Мастер квизов", "Вы успешно прошли 10 квизов с результатом 80% и более!")
             }
         }
     }
 
     private fun awardAchievement(nickname: String, name: String, description: String) {
-        if (achievementRepository.findByNicknameAndAchievementName(nickname, name) == null) {
+        if (achievementRepository.findByNickname(nickname) == null) {
             val achievement = AchievementRecord(
                 nickname = nickname,
                 achievementName = name,

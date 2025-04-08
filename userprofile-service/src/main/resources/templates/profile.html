@@ -47,11 +47,13 @@
           </div>
         </div>
       </div>
-
       <!-- Достижения -->
       <div>
         <h3 class="text-xl font-semibold mb-2">Достижения</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div th:if="${#lists.isEmpty(achievements)}" class="text-gray-500">
+          У вас пока нет достижений.
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" th:if="${not #lists.isEmpty(achievements)}">
           <div th:each="achieve : ${achievements}" class="bg-yellow-50 p-4 rounded shadow">
             <h4 class="font-bold text-yellow-700" th:text="${achieve.achievementName}">Название ачивки</h4>
             <p class="text-yellow-600" th:text="${achieve.description}">Описание ачивки</p>
@@ -59,7 +61,6 @@
           </div>
         </div>
       </div>
-
       <!-- Последние квизы (если нужно) -->
       <div>
         <h3 class="text-xl font-semibold mb-2">Последние попытки квизов</h3>
@@ -71,7 +72,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
