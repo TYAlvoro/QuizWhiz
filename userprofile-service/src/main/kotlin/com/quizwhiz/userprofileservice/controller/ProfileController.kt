@@ -16,7 +16,7 @@ class ProfileController(
 ) {
     @GetMapping("/profile/{username}")
     fun viewProfile(@PathVariable username: String, model: Model): String {
-        // Если пользователь не аутентифицирован или пытается посмотреть чужой профиль, перенаправляем на страницу входа
+        // Если пользователь не аутентифицирован или пытается просмотреть чужой профиль – перенаправляем на страницу входа
         val auth = SecurityContextHolder.getContext().authentication
         if (auth == null || auth.name != username) return "redirect:/login"
 
@@ -31,10 +31,16 @@ class ProfileController(
         } catch (ex: Exception) {
             emptyList()
         }
+        val achievements = try {
+            quizServiceClient.getAchievements(username)
+        } catch (ex: Exception) {
+            emptyList()
+        }
 
         model.addAttribute("profile", profile)
         model.addAttribute("recentQuizzes", recentQuizzes)
         model.addAttribute("recentCourses", recentCourses)
+        model.addAttribute("achievements", achievements)
         return "profile"
     }
 }
