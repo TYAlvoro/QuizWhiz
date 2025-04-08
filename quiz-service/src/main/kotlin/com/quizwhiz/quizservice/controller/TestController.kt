@@ -8,6 +8,7 @@ import com.quizwhiz.quizservice.dto.AnswerDto
 import com.quizwhiz.quizservice.repository.QuestionRepository
 import com.quizwhiz.quizservice.repository.QuizAttemptRepository
 import com.quizwhiz.quizservice.repository.QuizRepository
+import com.quizwhiz.quizservice.service.AchievementService
 import jakarta.annotation.security.PermitAll
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
@@ -20,7 +21,8 @@ import java.util.Date
 class TestController(
     private val quizRepository: QuizRepository,
     private val questionRepository: QuestionRepository,
-    private val quizAttemptRepository: QuizAttemptRepository
+    private val quizAttemptRepository: QuizAttemptRepository,
+    private val achievementService: AchievementService  // новый сервис для ачивок
 ) {
 
     @PermitAll
@@ -80,6 +82,10 @@ class TestController(
             attemptedAt = Date()
         )
         quizAttemptRepository.save(attempt)
+
+        // Проверяем достижения
+        achievementService.processAchievements(nickname, quizId, correctCount, quiz.questionIds.size)
+
         model.addAttribute("attempt", attempt)
         return "quizResult"
     }
